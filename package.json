@@ -1,0 +1,17 @@
+{
+  "name": "safetree",
+  "version": "1.0.0",
+  "description": "中国安全教育网全自动答题工具",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^1.4.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+      "start": "electron .",
+    "dev": "electron . --debug",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gucong",
+  "license": "MIT"
+}
