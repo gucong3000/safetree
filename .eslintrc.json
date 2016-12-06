@@ -1,0 +1,44 @@
+{
+	"env": {
+		"amd": true,
+		"browser": true,
+		"commonjs": true,
+		"es6": true,
+		"node": true,
+		"shared-node-browser": true,
+		"worker": true
+	},
+	"extends": [
+		"eslint:recommended"
+	],
+	"parser": "babel-eslint",
+	"root": true,
+	"rules": {
+		"indent": [
+			"warn",
+			"tab",
+			{
+				"SwitchCase": 1
+			}
+		],
+		"no-console": [
+			"off",
+			{
+			}
+		],
+		"quotes": [
+			"error",
+			"double",
+			{
+				"allowTemplateLiterals": true,
+				"avoidEscape": true
+			}
+		],
+		"valid-jsdoc": [
+			"warn",
+			{
+				"requireReturn": false
+			}
+		]
+	}
+}

@@ -1,13 +1,16 @@
-module.exports = function(src) {
+module.exports = function(src, callback) {
 	return new Promise((resolve, reject)=>{
 		let ifr = document.createElement("iframe");
 		ifr.onload = function() {
-			resolve(function(selector){
-				return Array.from(ifr.contentDocument.querySelectorAll(selector));
-			});
-			process.nextTick(()=>{
-				document.body.removeChild(ifr);
-			})
+			ifr.contentWindow.onclose = function(e) {
+				setTimeout(() => {
+					resolve(e);
+					setTimeout(() => {
+						document.body.removeChild(ifr);
+					}, 5000);
+				}, 1000);
+			}
+			callback(ifr.contentWindow);
 		};
 		ifr.onerror = reject;
 		ifr.src = src;
