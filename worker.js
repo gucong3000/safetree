@@ -1,6 +1,6 @@
 const teacher = require("./teacher");
 const student = require("./student");
-
+// document.domain = document.domain.replace(/^.*?(\w+\.com.cn)$/, "$1");
 window.$("input[type=password]").attr("value", 123456)
 
 function loop(students) {
@@ -20,5 +20,5 @@ Promise.all([teacher.getWorks(), teacher.getStudents()]).then(function([works]) 
 	} else {
 		console.log("OK, 大家的作业都做完了！");
 	}
-	return
+	return;
 })

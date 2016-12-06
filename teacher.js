@@ -7,7 +7,7 @@ const teacher = {
 			return teacher.data;
 		}
 		console.log("教师正在登陆。");
-		teacher.data = login(userName || "zhaoling4004", password).then(data => teacher.data = data);
+		teacher.data = login(userName || "zhaoling4004", password);
 		return teacher.data
 	},
 	getUnfinishedStudents: function(url) {
@@ -39,22 +39,43 @@ const teacher = {
 			return works;
 		});
 	},
-	getSpecial: function() {
-		request.get("/EduAdmin/SkillCondition/SkillInfo?s1=2&s2=-1").then(html => {
-			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href]").map(a => a.getAttribute("href")).toArray();
-		}).then(links => {
-			console.log(links);
+	getSpecial: function(url) {
+		return request.post(url).then(html => {
+			return $(html).find("tr").filter((i, tr) => {
+				return tr.children[2] && tr.children[2].innerText.trim() === "未完成";
+			}).map((i, tr) => {
+				return tr.children[1].innerText.trim();
+			}).toArray();
 		});
+	},
+	getSpecials: function() {
+		if (teacher.specials) {
+			return teacher.specials;
+		}
+		teacher.specials = teacher.login().then(() => {
+			console.log("教师正在检查未完成的专题作业。");
+			return request.get("/EduAdmin/Home/Index");
+		}).then(html => {
+			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href]").toArray();
+		}).then(links => {
+			let works = [];
+			return Promise.all(links.map(link => {
+				return teacher.getSpecial(link.getAttribute("href")).then(unfinishedStudents => {
+					works = works.concat(unfinishedStudents);
+				});
+			})).then(() => works);
+		});
+		return teacher.specials;
 	},
 	getWorks: function() {
 		if (teacher.works) {
 			return teacher.works;
 		}
 		teacher.works = teacher.login().then(() => {
-			console.log("教师正在检查未完成的作业。");
+			console.log("教师正在检查未完成的普通作业。");
 			return teacher.getUnfinishedWorks();
 		}).then(unfinishedWorks => {
-			var works = {};
+			let works = {};
 
 			function addWork (name, work) {
 				if(works[name]) {
@@ -70,8 +91,12 @@ const teacher = {
 				return teacher.getUnfinishedStudents(url).then(names => {
 					names.forEach(name => addWork(name, work.url));
 				});
-			})).then(() => {
-				console.log("作业未完成情况统计：", works);
+			})).then(() => teacher.getSpecials()).then(specials => {
+				if (specials.length) {
+					specials.forEach(name => addWork(name, "/JiaTing/JtMyHomeWork.html"));
+				}
+				console.log("普通作业未完成情况统计：", works);
+				// return /JiaTing/JtMyHomeWork.html
 				return works;
 			});
 		});
@@ -101,8 +126,6 @@ const teacher = {
 					});
 					if (id && name) {
 						students[name] = id;
-					} else {
-						// console.log(i, id);
 					}
 				});
 				return students;

@@ -30,24 +30,7 @@ module.exports = function (name) {
 		},
 		doWork: function(url) {
 			console.log(name + "正在完成作业项：" + url);
-			return load(url, window => {
-				if (window.ShowTestPaper) {
-					window.getAnswers = function(answers) {
-						setTimeout(function() {
-							window.$(".bto_testbox input[type=radio]").prop("checked", function(i) {
-								return !!+answers.Rows[i].istrue;
-							});
-							window.$(".bto_testbox .btn_submit").click();
-							window.onclose("ok");
-						}, 0);
-					};
-
-					window.eval(window.ShowTestPaper.toString().replace(/TestPaperThreelistGet2.*?\n?.*?if\s+\(.*?\b(\w+)\.Rows\.length.*?\)\s*\{/, function(s, dataVarName) {
-						return s + "getAnswers(" + dataVarName + ");";
-					}));
-					window.ShowTestPaper();
-				}
-			});
+			return load(url);
 		}
 	}
 	return student;
