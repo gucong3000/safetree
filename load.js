@@ -3,9 +3,6 @@ module.exports = function(src) {
 		let webview = document.createElement("webview");
 		webview.addEventListener("dom-ready", () => {
 			// webview.openDevTools();
-			setTimeout(() => {
-				webview.executeJavaScript(`require(${ JSON.stringify(__dirname + "/task.js") })`)
-			}, 3000);
 		});
 		webview.addEventListener("ipc-message", (event) => {
 			if (event.channel === "close") {
@@ -13,7 +10,7 @@ module.exports = function(src) {
 				setTimeout(() => {
 					resolve(event);
 					setTimeout(() => {
-						document.body.removeChild(webview);
+						webview.parentNode.removeChild(webview);
 					}, 5000);
 				}, 1000);
 			}
@@ -21,6 +18,9 @@ module.exports = function(src) {
 		webview.addEventListener("did-fail-load", reject);
 		webview.src = src;
 		webview.nodeintegration = true;
+		webview.disablewebsecurity = true;
+		webview.allowpopups = true;
+		webview.preload = __dirname + "/task.js";
 		webview.style.position = "fixed";
 		webview.style.zIndex = 0xff;
 		webview.style.top = 0;
