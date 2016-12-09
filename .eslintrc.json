@@ -45,6 +45,10 @@
 			"error",
 			"always"
 		],
+		"spaced-comment": [
+			"error",
+			"always"
+		],
 		"valid-jsdoc": [
 			"warn",
 			{
