@@ -34,6 +34,17 @@
 				"avoidEscape": true
 			}
 		],
+		"semi": [
+			"warn",
+			"always",
+			{
+				"omitLastInOneLineBlock": true
+			}
+		],
+		"space-before-blocks": [
+			"error",
+			"always"
+		],
 		"valid-jsdoc": [
 			"warn",
 			{

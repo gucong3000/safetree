@@ -1,11 +1,18 @@
+const {
+	remote,
+} = require("electron");
 module.exports = function(src) {
+	let isDevToolsOpened = remote.getCurrentWebContents().isDevToolsOpened();
 	return new Promise((resolve, reject) => {
 		let webview = document.createElement("webview");
 		webview.addEventListener("dom-ready", () => {
 			// webview.openDevTools();
 			setTimeout(() => {
-				webview.executeJavaScript(`require(${ JSON.stringify(__dirname + "/task.js") })`)
+				webview.executeJavaScript(`require(${ JSON.stringify(__dirname + "/task.js") })`);
 			}, 3000);
+			if(isDevToolsOpened) {
+				webview.openDevTools();
+			}
 		});
 		webview.addEventListener("ipc-message", (event) => {
 			if (event.channel === "close") {
@@ -30,4 +37,4 @@ module.exports = function(src) {
 		document.documentElement.style.overflow = "hidden";
 		document.body.appendChild(webview);
 	});
-}
+};

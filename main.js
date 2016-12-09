@@ -1,17 +1,17 @@
-const path = require("path")
-const electron = require("electron")
-const BrowserWindow = electron.BrowserWindow
-const app = electron.app
+const path = require("path");
+const electron = require("electron");
+const BrowserWindow = electron.BrowserWindow;
+const app = electron.app;
 
-var mainWindow = null
+var mainWindow = null;
 
 function worker (webContents) {
-	webContents.executeJavaScript(`require(${ JSON.stringify(path.join(__dirname, "worker.js")) })`)
+	webContents.executeJavaScript(`require(${ JSON.stringify(path.join(__dirname, "worker.js")) })`);
 }
 
 function initializeContents(webContents) {
 
-	webContents.on("did-finish-load", e => worker(e.sender))
+	webContents.on("did-finish-load", e => worker(e.sender));
 	webContents.on("new-window", e => initializeContents(e.sender));
 }
 
@@ -22,36 +22,36 @@ function initialize () {
 			minWidth: 680,
 			height: 840,
 			title: app.getName()
-		}
+		};
 
-		mainWindow = new BrowserWindow(windowOptions)
+		mainWindow = new BrowserWindow(windowOptions);
 
-		mainWindow.webContents.openDevTools()
+		mainWindow.webContents.openDevTools();
 
 		mainWindow.on("closed", function () {
-			mainWindow = null
-		})
+			mainWindow = null;
+		});
 
-		initializeContents(mainWindow.webContents)
+		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL("http://chengdu.safetree.com.cn/ ")
+		mainWindow.loadURL("http://chengdu.safetree.com.cn/ ");
 	}
 
 	app.on("ready", function () {
-		createWindow()
-	})
+		createWindow();
+	});
 
 	app.on("window-all-closed", function () {
 		if (process.platform !== "darwin") {
-			app.quit()
+			app.quit();
 		}
-	})
+	});
 
 	app.on("activate", function () {
 		if (mainWindow === null) {
-			createWindow()
+			createWindow();
 		}
-	})
+	});
 }
 
 initialize();
