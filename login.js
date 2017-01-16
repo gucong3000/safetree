@@ -1,12 +1,14 @@
 const request = require("./request");
 const dialogs = require("./dialogs");
-const cache = {};
 
 function login(userName, password) {
-	if(cache[userName]) {
-		return Promise.resolve(cache[userName]);
+	if(sessionStorage.getItem(userName)) {
+		return Promise.resolve(JSON.parse(sessionStorage.getItem(userName)));
 	}
 	const promise = dialogs.prompt("请输入验证码").then(checkcode => {
+		if(!checkcode) {
+			throw "用户取消了登录";
+		}
 		// userName = localStorage.getItem(userName) || userIdMap[userName] || userName;
 		password = password || "123456";
 		return request.getJSON("/LoginHandler.ashx?jsoncallback=?", {
@@ -19,8 +21,13 @@ function login(userName, password) {
 		});
 	}).then(json => {
 		if (json.ret === 1) {
-			// localStorage.setItem(json.data.TrueName, json.data.UserName)
-			return cache[userName] = json.data;
+			if(!sessionStorage.length) {
+				request.get("/MainPage.html").then(html => {
+					document.write(html)
+				});
+			}
+			sessionStorage.setItem(userName, JSON.stringify(json.data));
+			return json.data;
 		} else if (json.msg) {
 			return dialogs.alert(json.msg).then(() => {
 				return login(userName, password);
@@ -35,6 +42,11 @@ function login(userName, password) {
     icon.style.position = "relative";
 	icon.style.width = "auto";
 	icon.src = "/checkcode.aspx?codetype=1&r=" + Math.random();
+	try {
+		document.querySelector("#UName").value = userName;
+	} catch(ex) {
+
+	}
 	return promise;
 }
 
