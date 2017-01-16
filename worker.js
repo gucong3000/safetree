@@ -13,7 +13,8 @@ function loop(students) {
 
 console.log("开始工作啦。");
 
-Promise.all([teacher.getWorks(), teacher.getStudents()]).then(function([works]) {
+Promise.all([teacher.getWorks(), teacher.getStudents()]).then(function([works, students]) {
+	console.log("学生账号", students);
 	const unfinishedStudents = Object.keys(works);
 	if (unfinishedStudents.length) {
 		return loop(Object.keys(works).map(student));
