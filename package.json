@@ -5,7 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "dialogs": "^1.1.17",
-    "electron": "^1.4.15"
+    "electron": "^1.6.1"
   },
   "devDependencies": {},
   "scripts": {
