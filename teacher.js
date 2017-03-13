@@ -6,9 +6,11 @@ const teacher = {
 		if (teacher.data) {
 			return teacher.data;
 		}
-		console.log("教师正在登陆。");
-		teacher.data = login(userName || "zhaoling4004", password);
-		return teacher.data;
+		console.log("教师正在登陆。", userName);
+		return login(userName, password).then(info => {
+			teacher.data = Promise.resolve(info);
+			return info;
+		});
 	},
 	getUnfinishedStudents: function(url) {
 		return request.post(url).then(html => {

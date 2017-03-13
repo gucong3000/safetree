@@ -16,7 +16,7 @@ module.exports = function(src) {
 				setTimeout(() => {
 					resolve(event);
 					setTimeout(() => {
-						webview.parentNode.removeChild(webview);
+						document.body.removeChild(webview);
 					}, 5000);
 				}, 1000);
 			}

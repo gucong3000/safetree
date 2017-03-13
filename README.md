@@ -10,5 +10,7 @@ safetree
 ## 运行
 
 ```bash
-npm start
+npm start -- chengdu --dev
 ```
+
+> `chengdu` 请替换为你所在城市的二级域名

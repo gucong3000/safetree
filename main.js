@@ -10,7 +10,6 @@ function worker (webContents) {
 }
 
 function initializeContents(webContents) {
-
 	webContents.on("did-finish-load", e => worker(e.sender));
 	webContents.on("new-window", e => initializeContents(e.sender));
 }
@@ -26,7 +25,20 @@ function initialize () {
 
 		mainWindow = new BrowserWindow(windowOptions);
 
-		mainWindow.webContents.openDevTools();
+		var city = "chengdu";
+		var dev = false;
+
+		process.argv.slice(1).forEach(arg => {
+			if (/^\w+$/.test(arg)) {
+				city = arg;
+			} else if (/^--dev$/.test(arg)) {
+				dev = true;
+			}
+		});
+
+		if (dev) {
+			mainWindow.webContents.openDevTools();
+		}
 
 		mainWindow.on("closed", function () {
 			mainWindow = null;
@@ -34,7 +46,7 @@ function initialize () {
 
 		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL("http://chengdu.safetree.com.cn/");
+		mainWindow.loadURL(`http://${ city }.safetree.com.cn/`);
 	}
 
 	app.on("ready", function () {
