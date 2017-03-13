@@ -2,15 +2,11 @@ const request = require("./request");
 const dialogs = require("./dialogs");
 
 function login(userName, password) {
-	if(sessionStorage.getItem(userName)) {
-		return Promise.resolve(JSON.parse(sessionStorage.getItem(userName)));
-	}
 	const promise = dialogs.prompt("请输入验证码").then(checkcode => {
 		if(!checkcode) {
 			throw "用户取消了登录";
 		}
 		// userName = localStorage.getItem(userName) || userIdMap[userName] || userName;
-		password = password || "123456";
 		return request.getJSON("/LoginHandler.ashx?jsoncallback=?", {
 			userName,
 			password,
@@ -20,14 +16,9 @@ function login(userName, password) {
 			r: Math.random()
 		});
 	}).then(json => {
-		if (json.ret === 1) {
-			if(!sessionStorage.length) {
-				request.get("/MainPage.html").then(html => {
-					document.write(html)
-				});
-			}
-			sessionStorage.setItem(userName, JSON.stringify(json.data));
-			return json.data;
+		if (+json.ret === 1) {
+			// sessionStorage.setItem(userName, JSON.stringify(json.data));
+			return getUserInfo(getUserInfo);
 		} else if (json.msg) {
 			return dialogs.alert(json.msg).then(() => {
 				return login(userName, password);
@@ -38,16 +29,52 @@ function login(userName, password) {
 	});
 	const icon = document.querySelector(".prompt .icon");
 	icon.style.display = "block";
-    icon.style.margin = "auto";
-    icon.style.position = "relative";
+	icon.style.margin = "auto";
+	icon.style.position = "relative";
 	icon.style.width = "auto";
 	icon.src = "/checkcode.aspx?codetype=1&r=" + Math.random();
-	try {
-		document.querySelector("#UName").value = userName;
-	} catch(ex) {
-
-	}
 	return promise;
 }
 
-module.exports = login;
+module.exports = function (userName, password) {
+	password = password || "123456";
+	try {
+		document.querySelector("#UName").value = userName;
+	} catch(ex) {
+		//
+	}
+	return speciallogin(userName, password).catch(() => {
+		return login(userName, password);
+	}).then(info => {
+		const url = info.baseurl + "/MainPage.html";
+		if(location.href === url) {
+			return info;
+		}
+		return request.get(url).then(html => {
+			history.pushState(info, "安全教育平台", url);
+			document.write(html);
+			return info;
+		});
+	});
+};
+// module.exports = login;
+
+function speciallogin(userName, password) {
+	return request.getJSON("http://speciallogin.safetree.com.cn/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
+		account: userName,
+		password,
+		r: Math.random()
+	}).then(getUserInfo);
+}
+
+
+function getUserInfo() {
+	return request.getJSON("/Education/Special.asmx/GetUserInfo?jsoncallback=?", {
+		r: Math.random()
+	}).then(json => {
+		if(+json.userid < 0) {
+			throw json;
+		}
+		return json;
+	});
+}
