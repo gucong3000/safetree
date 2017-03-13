@@ -14,11 +14,36 @@
 	"parser": "babel-eslint",
 	"root": true,
 	"rules": {
+		"arrow-spacing": [
+			"error",
+			{
+				"after": true,
+				"before": true
+			}
+		],
+		"comma-spacing": [
+			"error",
+			{
+				"after": true,
+				"before": false
+			}
+		],
+		"eqeqeq": [
+			"error",
+			"smart"
+		],
 		"indent": [
 			"warn",
 			"tab",
 			{
 				"SwitchCase": 1
+			}
+		],
+		"keyword-spacing": [
+			"error",
+			{
+				"after": true,
+				"before": true
 			}
 		],
 		"no-console": [
@@ -45,9 +70,16 @@
 			"error",
 			"always"
 		],
+		"space-infix-ops": [
+			"error"
+		],
 		"spaced-comment": [
 			"error",
 			"always"
+		],
+		"strict": [
+			"error",
+			"safe"
 		],
 		"valid-jsdoc": [
 			"warn",

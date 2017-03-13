@@ -32,6 +32,6 @@ module.exports = function (name) {
 			console.log(name + "正在完成作业项：" + url);
 			return load(url);
 		}
-	}
+	};
 	return student;
 };

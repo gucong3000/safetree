@@ -8,7 +8,7 @@ const teacher = {
 		}
 		console.log("教师正在登陆。");
 		teacher.data = login(userName || "zhaoling4004", password);
-		return teacher.data
+		return teacher.data;
 	},
 	getUnfinishedStudents: function(url) {
 		return request.post(url).then(html => {
@@ -78,7 +78,7 @@ const teacher = {
 			let works = {};
 
 			function addWork (name, work) {
-				if(works[name]) {
+				if (works[name]) {
 					works[name].push(work);
 				} else {
 					works[name] = [work];
@@ -120,7 +120,7 @@ const teacher = {
 						}
 						if (/^\w+$/.test(value)) {
 							id = value;
-						} else if(!name) {
+						} else if (!name) {
 							name = value;
 						}
 					});
@@ -133,6 +133,6 @@ const teacher = {
 		});
 		return teacher.students;
 	}
-}
+};
 
 module.exports = teacher;

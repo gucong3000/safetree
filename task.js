@@ -2,7 +2,7 @@ window.open = url => {
 	location.href = url;
 };
 
-window.alert = ()=>{};
+window.alert = () => {};
 
 function callback(val) {
 	if (window.callPhantom) {
@@ -33,7 +33,7 @@ function browserDoWork() {
 		window.ShowTestPaper();
 	} else {
 		$("a[onclick^='tijiao'], a.qdbtn, a:contains('请签名'), a:contains('请点击'), a:contains('已完成观看'), #student_qdbtn").filter(":visible").click();
-		if (window.location.pathname ==="/JiaTing/JtMyHomeWork.html") {
+		if (window.location.pathname === "/JiaTing/JtMyHomeWork.html") {
 			var url;
 			$("a:contains('马上去完成')").toArray().some(a => {
 				if (/(['"])(http\s?:\/\/.+?)\1/.test(a.getAttribute("onclick"))) {
@@ -48,11 +48,11 @@ function browserDoWork() {
 			// $("input").map((i, input)=>input.checked)
 			const answer = [false, true, false, false, false, true, true, false, false, false, false, true, false, true, false, false, false, true, true, false, false, false, false, true, false, true, false, false, true, false];
 			$("input:checkbox").each((i, input) => input.checked = answer[i]);
-		} else if(location.pathname === "/TrafficSafety/2016122TrafficSafety_family2.html") {
+		} else if (location.pathname === "/TrafficSafety/2016122TrafficSafety_family2.html") {
 			// $(":radio,:checkbox").map((i, c)=>c.checked)
 			let ans = [false, true, false, false, false, true, true, false, false, false, false, true, false, true, false, false, false, true, true, false, false, false, false, true, false, true, false, false, true, false];
-			$(":radio,:checkbox").each((i, c)=> {
-				if(ans[i]) {
+			$(":radio,:checkbox").each((i, c) => {
+				if (ans[i]) {
 					$(c).click().parent().css("border", "1px solid red");
 				}
 			});
@@ -61,10 +61,10 @@ function browserDoWork() {
 	}
 }
 
-setInterval(browserDoWork,1000);
+setInterval(browserDoWork, 1000);
 
-window.addEventListener("load", ()=>{
-	setTimeout(()=>{
+window.addEventListener("load", () => {
+	setTimeout(() => {
 		window.$("a:contains('马上去完成'):visible").click();
 	}, 1000);
 	const link = document.createElement("a");

@@ -6,7 +6,7 @@ module.exports = function(src) {
 	return new Promise((resolve, reject) => {
 		let webview = document.createElement("webview");
 		webview.addEventListener("dom-ready", () => {
-			if(isDevToolsOpened) {
+			if (isDevToolsOpened) {
 				webview.openDevTools();
 			}
 		});

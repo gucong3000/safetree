@@ -34,7 +34,7 @@ function initialize () {
 
 		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL("http://chengdu.safetree.com.cn/ ");
+		mainWindow.loadURL("http://chengdu.safetree.com.cn/");
 	}
 
 	app.on("ready", function () {

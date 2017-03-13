@@ -3,7 +3,7 @@ const dialogs = require("./dialogs");
 
 function login(userName, password) {
 	const promise = dialogs.prompt("请输入验证码").then(checkcode => {
-		if(!checkcode) {
+		if (!checkcode) {
 			throw "用户取消了登录";
 		}
 		// userName = localStorage.getItem(userName) || userIdMap[userName] || userName;
@@ -40,14 +40,14 @@ module.exports = function (userName, password) {
 	password = password || "123456";
 	try {
 		document.querySelector("#UName").value = userName;
-	} catch(ex) {
+	} catch (ex) {
 		//
 	}
 	return speciallogin(userName, password).catch(() => {
 		return login(userName, password);
 	}).then(info => {
 		const url = info.baseurl + "/MainPage.html";
-		if(location.href === url) {
+		if (location.href === url) {
 			return info;
 		}
 		return request.get(url).then(html => {
@@ -72,7 +72,7 @@ function getUserInfo() {
 	return request.getJSON("/Education/Special.asmx/GetUserInfo?jsoncallback=?", {
 		r: Math.random()
 	}).then(json => {
-		if(+json.userid < 0) {
+		if (+json.userid < 0) {
 			throw json;
 		}
 		return json;
