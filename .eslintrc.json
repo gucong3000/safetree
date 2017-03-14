@@ -47,9 +47,13 @@
 			}
 		],
 		"no-console": [
-			"off",
-			{
-			}
+			"off"
+		],
+		"no-var": [
+			"error"
+		],
+		"prefer-const": [
+			"error"
 		],
 		"quotes": [
 			"error",

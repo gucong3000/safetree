@@ -9,6 +9,7 @@ const teacher = {
 		console.log("教师正在登陆。", userName);
 		return login(userName, password).then(info => {
 			teacher.data = Promise.resolve(info);
+			localStorage.setItem("teacher_user_name", userName);
 			return info;
 		});
 	},
@@ -27,10 +28,10 @@ const teacher = {
 			$(html).find("tr").filter((i, tr) => {
 				return !/<td>\s+(?:--|100(?:\.0+)?%)\s+<\/td>/.test(tr.innerHTML);
 			}).each((i, tr) => {
-				let links = tr.querySelectorAll("a[href]");
+				const links = tr.querySelectorAll("a[href]");
 				if (links && links.length > 1) {
 					const title = tr.children[1].innerText.trim();
-					const url = links[0].getAttribute("href").replace(/^.+?(\d+)$/, "http://chengdu.safetree.com.cn/JiaTing/EscapeSkill/SeeVideo.aspx?gid=486&li=$1");
+					const url = links[0].getAttribute("href").replace(/^.+?(\d+)$/, "/JiaTing/EscapeSkill/SeeVideo.aspx?gid=486&li=$1");
 					const checkUrl = links[links.length - 1].getAttribute("href");
 					works[checkUrl] = {
 						title,
@@ -77,7 +78,7 @@ const teacher = {
 			console.log("教师正在检查未完成的普通作业。");
 			return teacher.getUnfinishedWorks();
 		}).then(unfinishedWorks => {
-			let works = {};
+			const works = {};
 
 			function addWork (name, work) {
 				if (works[name]) {

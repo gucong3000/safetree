@@ -3,7 +3,7 @@ const electron = require("electron");
 const BrowserWindow = electron.BrowserWindow;
 const app = electron.app;
 
-var mainWindow = null;
+let mainWindow = null;
 
 function worker (webContents) {
 	webContents.executeJavaScript(`require(${ JSON.stringify(path.join(__dirname, "worker.js")) })`);
@@ -16,7 +16,7 @@ function initializeContents(webContents) {
 
 function initialize () {
 	function createWindow () {
-		var windowOptions = {
+		const windowOptions = {
 			width: 1080,
 			minWidth: 680,
 			height: 840,
@@ -25,8 +25,8 @@ function initialize () {
 
 		mainWindow = new BrowserWindow(windowOptions);
 
-		var city = "chengdu";
-		var dev = false;
+		let city = "chengdu";
+		let dev = false;
 
 		process.argv.slice(1).forEach(arg => {
 			if (/^\w+$/.test(arg)) {

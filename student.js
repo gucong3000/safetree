@@ -30,7 +30,9 @@ module.exports = function (name) {
 		},
 		doWork: function(url) {
 			console.log(name + "正在完成作业项：" + url);
-			return load(url);
+			return load(url).catch(ex => {
+				console.error(name, "未能完成作业", url, "请稍后重试", ex);
+			});
 		}
 	};
 	return student;
