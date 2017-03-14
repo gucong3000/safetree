@@ -62,12 +62,12 @@ module.exports = function(src) {
 		document.body.appendChild(wrap);
 
 		function kill(data) {
-			webview.style.left = "-500%";
+			wrap.style.left = "-500%";
 			setTimeout(() => {
 				webview.delete();
 				document.body.removeChild(wrap);
 				resolve(data);
-			}, 1000);
+			}, 1200);
 		}
 
 	});
