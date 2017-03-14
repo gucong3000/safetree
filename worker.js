@@ -1,3 +1,4 @@
+"use strict";
 const teacher = require("./teacher");
 const student = require("./student");
 const dialogs = require("./dialogs");

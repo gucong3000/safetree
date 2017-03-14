@@ -1,3 +1,4 @@
+"use strict";
 function thenify(obj) {
 	Object.keys(obj).forEach(fnName => {
 		const fn = obj[fnName];

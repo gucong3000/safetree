@@ -1,3 +1,4 @@
+"use strict";
 const request = require("./request");
 
 module.exports = function (userName, password) {
@@ -12,9 +13,13 @@ module.exports = function (userName, password) {
 	return speciallogin(userName, password).then(info => {
 		if ("/MainPage.html" !== location.pathname) {
 			const url = "/MainPage.html";
+			const style = document.querySelector("head style:last-of-type");
 			return request.get(url).then(html => {
 				history.pushState(info, "安全教育平台", url);
 				document.write(html);
+				if (style) {
+					document.documentElement.firstChild.appendChild(style);
+				}
 				return info;
 			});
 		}

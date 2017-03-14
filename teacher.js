@@ -1,3 +1,4 @@
+"use strict";
 const login = require("./login");
 const request = require("./request");
 const $ = window.$;

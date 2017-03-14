@@ -1,3 +1,4 @@
+"use strict";
 ["post", "get", "getJSON", "ajax"].forEach(fnName => {
 	module.exports[fnName] = function(url, data) {
 		data = Object.assign({

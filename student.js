@@ -1,3 +1,4 @@
+"use strict";
 const login = require("./login");
 const teacher = require("./teacher");
 const load = require("./load");

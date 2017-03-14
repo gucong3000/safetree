@@ -1,17 +1,13 @@
 {
 	"env": {
-		"amd": true,
 		"browser": true,
-		"commonjs": true,
 		"es6": true,
 		"node": true,
-		"shared-node-browser": true,
-		"worker": true
+		"shared-node-browser": true
 	},
 	"extends": [
 		"eslint:recommended"
 	],
-	"parser": "babel-eslint",
 	"root": true,
 	"rules": {
 		"arrow-spacing": [

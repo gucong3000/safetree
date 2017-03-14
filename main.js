@@ -1,3 +1,4 @@
+"use strict";
 const path = require("path");
 const electron = require("electron");
 const BrowserWindow = electron.BrowserWindow;
@@ -46,7 +47,7 @@ function initialize () {
 
 		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL(`http://${ city }.safetree.com.cn/`);
+		mainWindow.loadURL(`http://${ city }.safetree.com.cn/MainPage.html`);
 	}
 
 	app.on("ready", function () {

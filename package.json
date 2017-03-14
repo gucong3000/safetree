@@ -7,7 +7,9 @@
     "dialogs": "^1.1.18",
     "electron": "^1.6.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^3.17.1"
+  },
   "scripts": {
     "start": "electron .",
     "dev": "electron . --debug",
