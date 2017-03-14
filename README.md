@@ -5,7 +5,7 @@ safetree
 ## 安装
 
 - 安装[nodejs](https://nodejs.org/zh-cn/download/)
-- 运行命令`npm i`
+- 运行命令`npm i --registry=https://registry.npm.taobao.org --electron_mirror=http://npm.taobao.org/mirrors/electron/`
 
 ## 运行
 
