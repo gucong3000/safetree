@@ -40,10 +40,12 @@ teacherLogin().then(teacherInfo => {
 	if (unfinishedStudents.length) {
 		return dialogs.confirm(`发现${ unfinishedStudents.length }名同学未完作业，是否开始答题？`).then(ok => {
 			if (ok) {
-				return loop(unfinishedStudents.map(student));
+				return loop(unfinishedStudents.map(student)).then(() => {
+					return dialogs.alert("所有同学的作业都做完了。");
+				});
 			}
 		});
 	} else {
-		return dialogs.alert("OK, 大家的作业都做完了！");
+		return dialogs.alert("所有同学均已完成作业。");
 	}
 });
