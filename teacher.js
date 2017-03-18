@@ -1,15 +1,16 @@
 "use strict";
 const login = require("./login");
+const load = require("./load");
 const request = require("./request");
 const $ = window.$;
 const teacher = {
 	login: function(userName, password) {
 		if (teacher.data) {
-			return teacher.data;
+			return Promise.resolve(teacher.data);
 		}
 		console.log("教师正在登陆。", userName);
 		return login(userName, password).then(info => {
-			teacher.data = Promise.resolve(info);
+			teacher.data = info;
 			localStorage.setItem("teacher_user_name", userName);
 			return info;
 		});
@@ -23,6 +24,19 @@ const teacher = {
 			}).toArray();
 		});
 	},
+	getHomeWorkUrls: function() {
+		if (!teacher.homeWorkUrls) {
+			teacher.homeWorkUrls = load("/JiaTing/JtMyHomeWork.html").then(links => {
+				const urls = {};
+				links.forEach(args => {
+					args = eval(args.replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
+					urls[String(args[0])] = args[5] || `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${ args[3] }&li=${ args[0] }`;
+				});
+				return urls;
+			});
+		}
+		return teacher.homeWorkUrls;
+	},
 	getUnfinishedWorks: function() {
 		return request.get("/EduAdmin/SkillCondition/SkillInfo?s1=2&s2=-1").then(html => {
 			const works = {};
@@ -32,11 +46,11 @@ const teacher = {
 				const links = tr.querySelectorAll("a[href]");
 				if (links && links.length > 1) {
 					const title = tr.children[1].innerText.trim();
-					const url = links[0].getAttribute("href").replace(/^.+?(\d+)$/, "/JiaTing/EscapeSkill/SeeVideo.aspx?gid=486&li=$1");
+					const id = links[0].getAttribute("href").replace(/^.+?(\d+)$/, "$1");
 					const checkUrl = links[links.length - 1].getAttribute("href");
 					works[checkUrl] = {
 						title,
-						url,
+						id,
 					};
 				}
 			});
@@ -93,14 +107,16 @@ const teacher = {
 				const work = unfinishedWorks[url];
 				console.log("老师正在检查《" + work.title + "》的完成情况");
 				return teacher.getUnfinishedStudents(url).then(names => {
-					names.forEach(name => addWork(name, work.url));
+					return teacher.getHomeWorkUrls().then(urls => {
+						work.url = urls[work.id];
+						names.forEach(name => addWork(name, work));
+					});
 				});
 			})).then(() => teacher.getSpecials()).then(specials => {
 				if (specials.length) {
 					specials.forEach(name => addWork(name, "/JiaTing/JtMyHomeWork.html"));
 				}
 				console.log("普通作业未完成情况统计：", works);
-				// return /JiaTing/JtMyHomeWork.html
 				return works;
 			});
 		});

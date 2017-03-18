@@ -12,9 +12,9 @@ module.exports = function(src) {
 				webview.openDevTools();
 			}
 		});
-		webview.addEventListener("ipc-message", (event, data) => {
+		webview.addEventListener("ipc-message", (event) => {
 			if (event.channel === "close") {
-				kill(data);
+				kill(event.args && event.args[0]);
 			}
 		});
 		webview.addEventListener("did-fail-load", ex => {
@@ -68,7 +68,7 @@ module.exports = function(src) {
 				webview.delete();
 				document.body.removeChild(wrap);
 				resolve(data);
-			}, 1200);
+			}, 200);
 		}
 
 	});

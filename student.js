@@ -29,10 +29,10 @@ module.exports = function (name) {
 				});
 			});
 		},
-		doWork: function(url) {
-			console.log(name + "正在完成作业项：" + url);
-			return load(url).catch(ex => {
-				console.error(name, "未能完成作业", url, "请稍后重试", ex);
+		doWork: function(work) {
+			console.log(name + "正在完成作业项：" + work.title);
+			return load(work.url).catch(ex => {
+				console.error(name, "未能完成作业", work.title, "请稍后重试", ex);
 			});
 		}
 	};

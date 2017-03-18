@@ -41,23 +41,41 @@ function browserDoWork() {
 				$(c).click().parent().css("border", "1px solid red");
 			}
 		});
-		// console.log($(":radio,:checkbox").map((i, c)=>c.checked));
 	}
 }
 
+function getHomeWorkUrls() {
+	let links = document.querySelectorAll("table tr a[name^=workToUrl]");
+	if (links && links.length) {
+		links = Array.from(links).map(a => a.getAttribute("onclick").trim());
+		callback(links);
+	} else {
+		setTimeout(getHomeWorkUrls, 800);
+	}
+}
 
 window.addEventListener("load", () => {
 	setTimeout(() => {
 		const $ = window.$;
-		if (window.ShowTestPaper) {
+
+		function whaitResult() {
+			if ($("#yes:visible").length) {
+				callback();
+			} else {
+				setTimeout(whaitResult, 600);
+			}
+		}
+		if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
+			getHomeWorkUrls();
+		} else if (window.ShowTestPaper) {
 			window.getAnswers = function(answers) {
 				setTimeout(function() {
 					$(".bto_testbox input[type=radio]").prop("checked", function(i) {
 						return !!+answers.Rows[i].istrue;
 					});
 					$(".bto_testbox .btn_submit").click();
-					callback();
-				}, 1000);
+					whaitResult();
+				}, 600);
 			};
 
 			window.eval(window.ShowTestPaper.toString().replace(/TestPaperThreelistGet2.*?\n?.*?if\s+\(.*?\b(\w+)\.Rows\.length.*?\)\s*\{/, function(s, dataVarName) {
