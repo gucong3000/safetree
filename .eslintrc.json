@@ -24,12 +24,16 @@
 				"before": false
 			}
 		],
+		"eol-last": [
+			"error",
+			"always"
+		],
 		"eqeqeq": [
 			"error",
 			"smart"
 		],
 		"indent": [
-			"warn",
+			"error",
 			"tab",
 			{
 				"SwitchCase": 1
@@ -60,10 +64,10 @@
 			}
 		],
 		"semi": [
-			"warn",
+			"error",
 			"always",
 			{
-				"omitLastInOneLineBlock": true
+				"omitLastInOneLineBlock": false
 			}
 		],
 		"space-before-blocks": [
@@ -82,7 +86,7 @@
 			"safe"
 		],
 		"valid-jsdoc": [
-			"warn",
+			"error",
 			{
 				"requireReturn": false
 			}

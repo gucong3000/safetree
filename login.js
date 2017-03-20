@@ -13,8 +13,8 @@ module.exports = function (userName, password) {
 	return speciallogin(userName, password).then(info => {
 		if ("/MainPage.html" !== location.pathname) {
 			const url = "/MainPage.html";
-			const style = document.querySelector("head style:last-of-type");
 			return request.get(url).then(html => {
+				const style = document.querySelector("head style:last-of-type");
 				history.pushState(info, "安全教育平台", url);
 				document.write(html);
 				if (style) {
@@ -22,6 +22,11 @@ module.exports = function (userName, password) {
 				}
 				return info;
 			});
+		} else {
+			const nameWrap = document.querySelector(".header-top .header-left+*");
+			if (nameWrap) {
+				nameWrap.innerHTML = "欢迎你，" + info.truename;
+			}
 		}
 		return info;
 	});

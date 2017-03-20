@@ -2,15 +2,31 @@
 const teacher = require("./teacher");
 const student = require("./student");
 const dialogs = require("./dialogs");
-// document.domain = document.domain.replace(/^.*?(\w+\.com.cn)$/, "$1");
+
 window.$("input[type=password]").attr("value", 123456);
+
+let stuList;
 
 function loop(students) {
 	const student = students.pop();
 	if (!student) {
 		return;
 	}
-	return student.doWorks().then(() => loop(students));
+	let stuOpt;
+	Array.from(stuList.options).some((option, i) => {
+		if (option.label === student.name || option.value === student.name) {
+			stuOpt = option;
+			stuList.selectedIndex = i;
+			return option;
+		}
+	});
+
+	return student.doWorks().then(() => {
+		if (stuOpt) {
+			stuOpt.disabled = true;
+		}
+		loop(students);
+	});
 }
 
 const userName = localStorage.getItem("teacher_user_name") || "";
@@ -29,12 +45,21 @@ teacherLogin().then(teacherInfo => {
 		select.options[i] = new Option(name, students[name]);
 	});
 
-	select.onchange = function() {
-		Array.from(select.selectedOptions).map(option => student(option.label).login());
-	};
+	// select.onchange = function() {
+	// 	Array.from(select.selectedOptions).map(option => student(option.label).login());
+	// };
+
+	select.style.position = "absolute";
+	select.style.height = "135px";
+	select.style.left = 0;
+	select.style.top = 0;
+
+	select.multiple = true;
+	// select.disabled = true;
 	setTimeout(() => {
-		document.querySelector(".header-top .header-left").appendChild(select);
+		document.documentElement.lastChild.appendChild(select);
 	}, 1000);
+	stuList = select;
 	return teacher.getWorks();
 }).then(works => {
 	const unfinishedStudents = Object.keys(works);
