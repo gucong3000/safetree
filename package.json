@@ -4,7 +4,7 @@
   "description": "中国安全教育网全自动答题工具",
   "main": "main.js",
   "dependencies": {
-    "dialogs": "^1.1.18",
+    "dialogs": "^1.1.19",
     "electron": "^1.6.2"
   },
   "devDependencies": {
