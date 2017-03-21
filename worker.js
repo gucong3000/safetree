@@ -25,7 +25,13 @@ function loop(students) {
 		if (stuOpt) {
 			stuOpt.disabled = true;
 		}
-		loop(students);
+		return loop(students);
+	}).catch(ex => {
+		if (ex && ex.userid) {
+			console.error(students.name + ", 登陆失败，跳过。");
+			return loop(students);
+		}
+		throw ex;
 	});
 }
 
