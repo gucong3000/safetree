@@ -21,12 +21,13 @@ function initialize () {
 			width: 1080,
 			minWidth: 680,
 			height: 840,
-			title: app.getName()
+			title: app.getName(),
+			show: !process.env.CI_TEACHER_ACCOUNT,
 		};
 
 		mainWindow = new BrowserWindow(windowOptions);
 
-		let city = "chengdu";
+		let city;
 		let dev = false;
 
 		process.argv.slice(1).forEach(arg => {
@@ -36,6 +37,25 @@ function initialize () {
 				dev = true;
 			}
 		});
+
+		if (process.env.CI_TEACHER_ACCOUNT) {
+			const ipcMain = electron.ipcMain;
+			ipcMain.on("dialogs.alert", (event, arg) => {
+				console.log.apply(console, arg);
+			});
+			ipcMain.on("worker.finish", () => {
+				app.exit();
+			});
+			const account = atob(process.env.CI_TEACHER_ACCOUNT).split(/\s+/g);
+			if (!city && !/\d/.test(account[0])) {
+				city = account[0];
+			}
+			dev = false;
+		}
+
+		if (!city) {
+			city = "chengdu";
+		}
 
 		if (dev) {
 			mainWindow.webContents.openDevTools();

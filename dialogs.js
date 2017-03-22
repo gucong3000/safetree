@@ -15,9 +15,29 @@ function thenify(obj) {
 	return obj;
 }
 
-const dialogs = thenify(require("dialogs")({
-	ok: "确定",
-	cancel: "取消",
-}));
+let dialogs;
+if (process.env.CI_TEACHER_ACCOUNT) {
+	const {ipcRenderer} = require("electron");
+	dialogs = {
+		prompt: function() {
+			const account = atob(process.env.CI_TEACHER_ACCOUNT).split(/\s+/g);
+			return Promise.resolve(account[account.length - 1]);
+		},
+		confirm: function() {
+			return Promise.resolve(true);
+		},
+		alert: function() {
+			const arg = Array.from(arguments);
+			console.log.apply(console, arg);
+			ipcRenderer.send("dialogs.alert", arg);
+			return Promise.resolve(true);
+		},
+	};
+} else {
+	dialogs = thenify(require("dialogs")({
+		ok: "确定",
+		cancel: "取消",
+	}));
 
+}
 module.exports = dialogs;

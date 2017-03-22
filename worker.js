@@ -80,4 +80,7 @@ teacherLogin().then(teacherInfo => {
 	} else {
 		return dialogs.alert("所有同学均已完成作业。");
 	}
+}).then(result => {
+	const {ipcRenderer} = require("electron");
+	ipcRenderer.send("worker.finish", result);
 });
