@@ -6,6 +6,10 @@ const app = electron.app;
 
 let mainWindow = null;
 
+function atob(str) {
+	return new Buffer(str, "base64").toString("binary");
+}
+
 function worker (webContents) {
 	webContents.executeJavaScript(`require(${ JSON.stringify(path.join(__dirname, "worker.js")) })`);
 }
@@ -51,6 +55,9 @@ function initialize () {
 				city = account[0];
 			}
 			dev = false;
+			setTimeout(() => {
+				app.exit(1);
+			}, 0xFFFFF);
 		}
 
 		if (!city) {
