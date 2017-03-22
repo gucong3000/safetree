@@ -9,6 +9,7 @@ env:
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1eWkxNDkwMTc5
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNoZW5kb25ncWluMTA3Mg==
     - CI_TEACHER_ACCOUNT=Y2hlbmdkdSB6aGFvbGluZzQwMDQ=
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIHpoYW9zaGFubGFu
 script:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
