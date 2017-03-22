@@ -2,14 +2,8 @@
 const request = require("./request");
 
 module.exports = function (userName, password) {
+	userName = userName || "unknow";
 	password = password || "123456";
-	if (userName) {
-		try {
-			document.querySelector("#UName").value = userName;
-		} catch (ex) {
-			//
-		}
-	}
 	return speciallogin(userName, password).then(info => {
 		if ("/MainPage.html" !== location.pathname) {
 			const url = "/MainPage.html";
