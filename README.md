@@ -1,7 +1,7 @@
 safetree
 ====
 
-[![Travis](https://img.shields.io/travis/gucong3000/safetree.svg?&label=Linux)](https://travis-ci.org/gucong3000/safetree)
+[![Travis](https://img.shields.io/travis/gucong3000/safetree.svg)](https://travis-ci.org/gucong3000/safetree)
 
 中国安全教育网全自动答题工具
 
