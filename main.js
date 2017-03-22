@@ -10,7 +10,7 @@ function atob(str) {
 	return new Buffer(str, "base64").toString("binary");
 }
 
-function worker (webContents) {
+function worker(webContents) {
 	webContents.executeJavaScript(`require(${ JSON.stringify(path.join(__dirname, "worker.js")) })`);
 }
 
@@ -59,6 +59,10 @@ function initialize () {
 				console.log("长时间无响应，自动退出。");
 				app.exit(1);
 			}, 0xFFFFF);
+			setInterval(() => {
+				mainWindow.reload();
+				console.log("长时间无响应，自动刷新。");
+			}, 0xFFFF);
 		}
 
 		if (!city) {
