@@ -56,6 +56,7 @@ function initialize () {
 			}
 			dev = false;
 			setTimeout(() => {
+				console.log("长时间无响应，自动退出。");
 				app.exit(1);
 			}, 0xFFFFF);
 		}

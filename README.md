@@ -1,5 +1,8 @@
 safetree
 ====
+
+[![Travis](https://img.shields.io/travis/gucong3000/safetree.svg?&label=Linux)](https://travis-ci.org/gucong3000/safetree)
+
 中国安全教育网全自动答题工具
 
 ## 安装
@@ -23,10 +26,3 @@ npm start -- chengdu --dev
   > 能够自动完成`常规作业`, `专题作业`没有通用解决办法，如果你有某次专题作业的答案，可连同网址发给作者让其内置答案。
 - 全国的安全平台都支持么？
   > 支持。如果你的城市不支持，请联系作者
-
-<!--
-emhvbmdzaGFuIGdvbmdoYW5odWkzNTMx
-d3V4aSBoYW5odWFxaWFuZw==
-emhvbmdzaGFuIGh1eWkxNDkwMTc5
-emhvbmdzaGFuIGNoZW5kb25ncWluMTA3Mg==
--->
