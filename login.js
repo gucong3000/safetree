@@ -2,7 +2,9 @@
 const request = require("./request");
 
 module.exports = function (userName, password) {
-	userName = userName || "unknow";
+	if (!userName) {
+		throw new Error("用户名不得为空");
+	}
 	password = password || "123456";
 	return speciallogin(userName, password).then(info => {
 		if ("/MainPage.html" !== location.pathname) {

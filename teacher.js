@@ -131,21 +131,23 @@ const teacher = {
 			return request.post("/EduAdmin/ClassManagement/ClassManagement").then(html => {
 				const students = {};
 				$(html).find("tr[rel]").filter((i, tr) => {
-					let name;
 					let id;
+					let name;
+					let account;
 					$(tr.children).each((i, td) => {
 						const value = td.innerText.trim();
-						if (/^\d+$/.test(value)) {
-							return;
-						}
-						if (/^\w+$/.test(value)) {
-							id = value;
-						} else if (!name) {
-							name = value;
+						if (value) {
+							if (!id && /^\d+$/.test(value)) {
+								id = value;
+							} else if (!account && /^\w+$/.test(value)) {
+								account = value;
+							} else if (!name) {
+								name = value;
+							}
 						}
 					});
-					if (id && name) {
-						students[name] = id;
+					if (account && name) {
+						students[name] = account;
 					}
 				});
 				return students;
