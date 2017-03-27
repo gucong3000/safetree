@@ -6,6 +6,7 @@ env:
   matrix:
     - CI_TEACHER_ACCOUNT=d3V4aSBoYW5odWFxaWFuZw==
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGdvbmdoYW5odWkzNTMx
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1bWluMTk4MDEwMjc=
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1eWkxNDkwMTc5
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNoZW5kb25ncWluMTA3Mg==
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIHpoYW9zaGFubGFu

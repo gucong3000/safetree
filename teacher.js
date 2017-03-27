@@ -2,13 +2,15 @@
 const login = require("./login");
 const load = require("./load");
 const request = require("./request");
+const logger = require("./logger");
 const $ = window.$;
+
 const teacher = {
 	login: function(userName, password) {
 		if (teacher.data) {
 			return Promise.resolve(teacher.data);
 		}
-		console.log("教师正在登陆。", userName);
+		logger.log("教师正在登陆。", userName);
 		return login(userName, password).then(info => {
 			teacher.data = info;
 			localStorage.setItem("teacher_user_name", userName);
@@ -71,7 +73,7 @@ const teacher = {
 			return teacher.specials;
 		}
 		teacher.specials = teacher.login().then(() => {
-			console.log("教师正在检查未完成的专题作业。");
+			logger.log("教师正在检查未完成的专题作业。");
 			return request.get("/EduAdmin/Home/Index");
 		}).then(html => {
 			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href]").toArray();
@@ -90,7 +92,7 @@ const teacher = {
 			return teacher.works;
 		}
 		teacher.works = teacher.login().then(() => {
-			console.log("教师正在检查未完成的普通作业。");
+			logger.log("教师正在检查未完成的普通作业。");
 			return teacher.getUnfinishedWorks();
 		}).then(unfinishedWorks => {
 			const works = {};
@@ -105,7 +107,7 @@ const teacher = {
 
 			return Promise.all(Object.keys(unfinishedWorks).map(url => {
 				const work = unfinishedWorks[url];
-				console.log("老师正在检查《" + work.title + "》的完成情况");
+				logger.log("老师正在检查《" + work.title + "》的完成情况");
 				return teacher.getUnfinishedStudents(url).then(names => {
 					return teacher.getHomeWorkUrls().then(urls => {
 						work.url = urls[work.id];
@@ -116,7 +118,7 @@ const teacher = {
 				if (specials.length) {
 					specials.forEach(name => addWork(name, "/JiaTing/JtMyHomeWork.html"));
 				}
-				console.log("普通作业未完成情况统计：", works);
+				logger.log("普通作业未完成情况统计：", works);
 				return works;
 			});
 		});

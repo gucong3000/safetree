@@ -1,8 +1,11 @@
 "use strict";
 const path = require("path");
 const electron = require("electron");
-const BrowserWindow = electron.BrowserWindow;
-const app = electron.app;
+const {
+	BrowserWindow,
+	ipcMain,
+	app,
+} = electron;
 
 let mainWindow = null;
 
@@ -43,11 +46,38 @@ function initialize () {
 		});
 
 		if (process.env.CI_TEACHER_ACCOUNT) {
-			const ipcMain = electron.ipcMain;
-			ipcMain.on("dialogs.alert", (event, arg) => {
-				console.log.apply(console, arg);
+
+			let timerExit;
+			let timerReload;
+
+			const resetTimeout = function() {
+				clearTimeout(timerExit);
+				clearInterval(timerReload);
+				// 程序连续30分钟无响应则退出程序
+				timerExit = setTimeout(() => {
+					console.log("长时间无响应，自动退出程序。");
+					app.exit(1);
+				}, 1800000);
+				// 程序连续100秒无响应刷新页面
+				timerReload = setInterval(() => {
+					mainWindow.reload();
+					console.log("长时间无响应，自动刷新页面。");
+				}, 100000);
+			};
+
+			Object.keys(console).forEach(fnName => {
+				ipcMain.on("logger." + fnName, (event, args) => {
+					resetTimeout();
+					console[fnName].apply(console, args);
+				});
+			});
+
+			ipcMain.on("dialogs.alert", (event, args) => {
+				resetTimeout();
+				console.log.apply(console, args);
 			});
 			ipcMain.on("worker.finish", () => {
+				resetTimeout();
 				app.exit();
 			});
 			const account = atob(process.env.CI_TEACHER_ACCOUNT).split(/\s+/g);
@@ -55,14 +85,7 @@ function initialize () {
 				city = account[0];
 			}
 			dev = false;
-			setTimeout(() => {
-				console.log("长时间无响应，自动退出。");
-				app.exit(1);
-			}, 0xFFFFF);
-			setInterval(() => {
-				mainWindow.reload();
-				console.log("长时间无响应，自动刷新。");
-			}, 0xFFFF);
+			resetTimeout();
 		}
 
 		if (!city) {

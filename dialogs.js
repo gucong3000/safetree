@@ -27,9 +27,9 @@ if (process.env.CI_TEACHER_ACCOUNT) {
 			return Promise.resolve(true);
 		},
 		alert: function() {
-			const arg = Array.from(arguments);
-			console.log.apply(console, arg);
-			ipcRenderer.send("dialogs.alert", arg);
+			const args = Array.from(arguments);
+			console.log.apply(console, args);
+			ipcRenderer.send("dialogs.alert", args);
 			return Promise.resolve(true);
 		},
 	};

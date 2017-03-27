@@ -2,6 +2,7 @@
 const teacher = require("./teacher");
 const student = require("./student");
 const dialogs = require("./dialogs");
+const logger = require("./logger");
 
 window.$("input[type=password]").attr("value", 123456);
 
@@ -28,7 +29,7 @@ function loop(students) {
 		return loop(students);
 	}).catch(ex => {
 		if (ex && ex.userid) {
-			console.error(student.name + "登陆失败，跳过。");
+			logger.error(student.name + "登陆失败，跳过。");
 			return loop(students);
 		}
 		throw ex;
@@ -42,10 +43,10 @@ function teacherLogin() {
 }
 
 teacherLogin().then(teacherInfo => {
-	console.log("教师登陆成功", teacherInfo.truename);
+	logger.log("教师登陆成功", teacherInfo.truename);
 	return teacher.getStudents();
 }).then(students => {
-	console.log("学生账号清单", students);
+	logger.log("学生账号清单", students);
 	const select = document.createElement("select");
 	Object.keys(students).forEach((name, i) => {
 		select.options[i] = new Option(name, students[name]);
