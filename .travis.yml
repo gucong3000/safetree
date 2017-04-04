@@ -2,17 +2,17 @@ sudo: false
 language: node_js
 node_js:
   - "stable"
+env:
+  matrix:
+    - CI_TEACHER_ACCOUNT=d3V4aSBoYW5odWFxaWFuZw==
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGdvbmdoYW5odWkzNTMx
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1bWluMTk4MDEwMjc=
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1eWkxNDkwMTc5
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNoZW5kb25ncWluMTA3Mg==
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIHpoYW9zaGFubGFu
+    - CI_TEACHER_ACCOUNT=Y2hlbmdkdSB6aGFvbGluZzQwMDQ=
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: CI_TEACHER_ACCOUNT=d3V4aSBoYW5odWFxaWFuZw==
-    - env: CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGdvbmdoYW5odWkzNTMx
-    - env: CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1bWluMTk4MDEwMjc=
-    - env: CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1eWkxNDkwMTc5
-    - env: CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNoZW5kb25ncWluMTA3Mg==
-    - env: CI_TEACHER_ACCOUNT=emhvbmdzaGFuIHpoYW9zaGFubGFu
-  include:
-    - env: CI_TEACHER_ACCOUNT=Y2hlbmdkdSB6aGFvbGluZzQwMDQ=
 script:
     - npm run -s test
     - export DISPLAY=:99.0
