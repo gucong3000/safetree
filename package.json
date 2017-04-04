@@ -8,12 +8,12 @@
     "electron": "^1.6.2"
   },
   "devDependencies": {
-    "eslint": "^3.18.0"
+    "eslint": "^3.19.0"
   },
   "scripts": {
     "start": "electron .",
     "dev": "electron . --debug",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint ."
   },
   "author": "gucong",
   "license": "MIT"
