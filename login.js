@@ -29,7 +29,7 @@ module.exports = function (userName, password) {
 };
 
 function speciallogin(userName, password) {
-	return request.getJSON("http://speciallogin.safetree.com.cn/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
+	return request.getJSON("//speciallogin.safetree.com.cn/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
 		account: userName,
 		password,
 		r: Math.random()

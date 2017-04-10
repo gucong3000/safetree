@@ -102,7 +102,7 @@ function initialize () {
 
 		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL(`http://${ city }.safetree.com.cn/MainPage.html`);
+		mainWindow.loadURL(`https://${ city }.safetree.com.cn/MainPage.html`);
 	}
 
 	app.on("ready", function () {
