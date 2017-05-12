@@ -1,20 +1,28 @@
 {
-  "name": "safetree",
-  "version": "1.0.0",
-  "description": "中国安全教育网全自动答题工具",
-  "main": "main.js",
+  "author": "gucong",
+  "bugs": {
+    "url": "https://github.com/gucong3000/safetree/issues"
+  },
   "dependencies": {
     "dialogs": "^1.1.19",
     "electron": "^1.6.6"
   },
+  "description": "中国安全教育网全自动答题工具",
   "devDependencies": {
     "eslint": "^3.19.0"
   },
+  "homepage": "https://github.com/gucong3000/safetree#readme",
+  "license": "MIT",
+  "main": "main.js",
+  "name": "safetree",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gucong3000/safetree.git"
+  },
   "scripts": {
-    "start": "electron .",
     "dev": "electron . --debug",
+    "start": "electron .",
     "test": "eslint ."
   },
-  "author": "gucong",
-  "license": "MIT"
+  "version": "1.0.0"
 }
