@@ -25,4 +25,4 @@ before_install:
 
 script:
   - npm test
-  - npm start
+  - node_modules/electron/dist/electron .
