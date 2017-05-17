@@ -24,5 +24,5 @@ before_install:
   - rm .npmrc -f
 
 script:
-  - npm run -s test
-  - travis_retry npm run -s start
+  - npm test
+  - npm start
