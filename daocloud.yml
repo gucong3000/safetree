@@ -8,7 +8,8 @@ test:
   job_type: test
   pull_request: true
   install:
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm test
 
@@ -19,72 +20,85 @@ test:
     - CI_TEACHER_ACCOUNT=d3V4aSBoYW5odWFxaWFuZw==
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm start
 
 中山_龚瀚慧:
   stage: build
   job_type: test
+  allow_failure: true
   env:
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGdvbmdoYW5odWkzNTMx
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm start
 
 中山_胡敏:
   stage: build
   job_type: test
+  allow_failure: true
   env:
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1bWluMTk4MDEwMjc=
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm start
 
 中山_胡依:
   stage: build
   job_type: test
+  allow_failure: true
   env:
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1eWkxNDkwMTc5
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm start
 
 中山_陈冬琴:
   stage: build
   job_type: test
+  allow_failure: true
   env:
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNoZW5kb25ncWluMTA3Mg==
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm start
 
 中山_赵善兰:
   stage: build
   job_type: test
+  allow_failure: true
   env:
     - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIHpoYW9zaGFubGFu
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm start
 
 成都_赵玲:
   stage: build
   job_type: test
+  allow_failure: true
   env:
     - CI_TEACHER_ACCOUNT=Y2hlbmdkdSB6aGFvbGluZzQwMDQ=
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
-    - npm i || npm i
+    - npm i -g npm
+    - npm i
   script:
     - npm start
