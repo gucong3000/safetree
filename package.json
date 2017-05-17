@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "dialogs": "^1.1.19",
-    "electron": "^1.6.7"
+    "electron": "^1.6.8"
   },
   "description": "中国安全教育网全自动答题工具",
   "devDependencies": {
