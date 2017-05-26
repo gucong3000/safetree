@@ -18,12 +18,8 @@ env:
 matrix:
   fast_finish: true
 
-before_script:
+script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-  # give xvfb some time to start
-  - sleep 3
-
-script:
   - npm test
   - travis_retry npm run -s start
