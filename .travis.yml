@@ -19,6 +19,7 @@ matrix:
   fast_finish: true
 
 script:
+  - rm .npmrc
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - npm test
