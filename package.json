@@ -9,7 +9,7 @@
   },
   "description": "中国安全教育网全自动答题工具",
   "devDependencies": {
-    "eslint": "^3.19.0"
+    "eslint": "^4.1.0"
   },
   "homepage": "https://github.com/gucong3000/safetree#readme",
   "license": "MIT",
