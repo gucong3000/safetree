@@ -8,7 +8,7 @@ test:
   job_type: test
   pull_request: true
   install:
-    - npm i
+    - npm i || cat /daocloud/builder/src/npm-debug.log
   script:
     - npm test
 
