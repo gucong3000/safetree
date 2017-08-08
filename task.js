@@ -17,10 +17,10 @@ function callback(val) {
 // 在浏览器页面内运行的函数，用于答题
 function browserDoWork() {
 	const $ = window.$;
-	$("a[onclick^='tijiao'], a.qdbtn, a:contains('请签名'), a:contains('请点击'), a:contains('已完成观看'), #student_qdbtn").filter(":visible").click();
+	$("a[onclick^='tijiao'], a.qdbtn, a:contains('请签名'), a:contains('请点击'), a:contains('已完成'), #student_qdbtn").filter(":visible").click();
 	if (window.location.pathname === "/JiaTing/JtMyHomeWork.html") {
 		let url;
-		$("a:contains('马上去完成')").toArray().some(a => {
+		$("a:contains('马上去')").toArray().some(a => {
 			if (/(['"])(http\s?:\/\/.+?)\1/.test(a.getAttribute("onclick"))) {
 				url = RegExp.$2;
 				return true;
@@ -47,8 +47,21 @@ function browserDoWork() {
 function getHomeWorkUrls() {
 	let links = document.querySelectorAll("table tr a[name^=workToUrl]");
 	if (links && links.length) {
-		links = Array.from(links).map(a => a.getAttribute("onclick").trim());
-		callback(links);
+		const urls = {
+			specials: [],
+		};
+		links = Array.from(links).map(a => {
+			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
+			if (args[5]) {
+				urls.specials.push({
+					title: a.parentNode.parentNode.children[1].textContent.trim(),
+					url: args[5],
+				});
+			} else {
+				urls[String(args[0])] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${ args[3] }&li=${ args[0] }`;
+			}
+		});
+		callback(urls);
 	} else {
 		setTimeout(getHomeWorkUrls, 800);
 	}
@@ -82,8 +95,10 @@ window.addEventListener("load", () => {
 				return s + "getAnswers(" + dataVarName + ");";
 			}));
 			window.ShowTestPaper();
+		} else if ($("a:contains('已完成'):visible").length >= 2) {
+			callback();
 		} else {
-			$("a:contains('马上去完成'):visible").click();
+			$("a:contains('马上去'):visible").click();
 			setInterval(browserDoWork, 1000);
 		}
 	}, 1000);
