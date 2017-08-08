@@ -20,7 +20,6 @@
     "url": "git+https://github.com/gucong3000/safetree.git"
   },
   "scripts": {
-    "dev": "electron . --debug",
     "start": "electron .",
     "test": "eslint ."
   },

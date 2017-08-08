@@ -47,10 +47,21 @@ function browserDoWork() {
 function getHomeWorkUrls() {
 	let links = document.querySelectorAll("table tr a[name^=workToUrl]");
 	if (links && links.length) {
-		links = Array.from(links).map(a => a.getAttribute("onclick").trim());
-		callback(links);
+		const urls = {
+			specials: {},
+		};
+		links = Array.from(links).map(a => {
+			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
+			if(args[5]) {
+				const title = a.parentNode.parentNode.children[1].textContent.trim()
+				urls.specials[title] = args[5];
+			} else {
+				urls[String(args[0])] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${ args[3] }&li=${ args[0] }`;
+			}
+		});
+		callback(urls);
 	} else {
-		setTimeout(getHomeWorkUrls, 800);
+		setTimeout(getHomeWorks, 800);
 	}
 }
 

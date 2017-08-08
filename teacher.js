@@ -28,14 +28,7 @@ const teacher = {
 	},
 	getHomeWorkUrls: function() {
 		if (!teacher.homeWorkUrls) {
-			teacher.homeWorkUrls = load("/JiaTing/JtMyHomeWork.html").then(links => {
-				const urls = {};
-				links.forEach(args => {
-					args = eval(args.replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
-					urls[String(args[0])] = args[5] || `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${ args[3] }&li=${ args[0] }`;
-				});
-				return urls;
-			});
+			teacher.homeWorkUrls = load("/JiaTing/JtMyHomeWork.html");
 		}
 		return teacher.homeWorkUrls;
 	},
@@ -116,9 +109,19 @@ const teacher = {
 				});
 			})).then(() => teacher.getSpecials()).then(specials => {
 				if (specials.length) {
-					specials.forEach(name => addWork(name, "/JiaTing/JtMyHomeWork.html"));
+					return teacher.getHomeWorkUrls().then(urls => {
+						specials.forEach(name => {
+							Object.keys(urls.specials).forEach(title => {
+								addWork(name, {
+									title: title,
+									url: urls.specials[title],
+								});
+							});
+						});
+					});
 				}
-				logger.log("普通作业未完成情况统计：", works);
+			}).then(() => {
+				logger.log("作业未完成情况统计：", works);
 				return works;
 			});
 		});
