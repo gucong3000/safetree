@@ -111,12 +111,7 @@ const teacher = {
 				if (specials.length) {
 					return teacher.getHomeWorkUrls().then(urls => {
 						specials.forEach(name => {
-							Object.keys(urls.specials).forEach(title => {
-								addWork(name, {
-									title: title,
-									url: urls.specials[title],
-								});
-							});
+							addWork(name, urls.specials[0]);
 						});
 					});
 				}
