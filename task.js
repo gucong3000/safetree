@@ -52,7 +52,7 @@ function getHomeWorkUrls() {
 		};
 		links = Array.from(links).map(a => {
 			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
-			if(args[5]) {
+			if (args[5]) {
 				urls.specials.push({
 					title: a.parentNode.parentNode.children[1].textContent.trim(),
 					url: args[5],
@@ -63,7 +63,7 @@ function getHomeWorkUrls() {
 		});
 		callback(urls);
 	} else {
-		setTimeout(getHomeWorks, 800);
+		setTimeout(getHomeWorkUrls, 800);
 	}
 }
 
@@ -95,7 +95,7 @@ window.addEventListener("load", () => {
 				return s + "getAnswers(" + dataVarName + ");";
 			}));
 			window.ShowTestPaper();
-		} else if($("a:contains('已完成'):visible").length >=2) {
+		} else if ($("a:contains('已完成'):visible").length >= 2) {
 			callback();
 		} else {
 			$("a:contains('马上去'):visible").click();
