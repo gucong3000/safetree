@@ -109,7 +109,7 @@ const teacher = {
 							students.forEach(name => {
 								addWork(name, urls.specials[index]);
 							});
-						})
+						});
 					});
 				}
 			}).then(() => {
