@@ -71,12 +71,7 @@ const teacher = {
 		}).then(html => {
 			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href]").toArray();
 		}).then(links => {
-			let works = [];
-			return Promise.all(links.map(link => {
-				return teacher.getSpecial(link.getAttribute("href")).then(unfinishedStudents => {
-					works = works.concat(unfinishedStudents);
-				});
-			})).then(() => works);
+			return Promise.all(links.map(link => teacher.getSpecial(link.getAttribute("href"))));
 		});
 		return teacher.specials;
 	},
@@ -108,11 +103,13 @@ const teacher = {
 					});
 				});
 			})).then(() => teacher.getSpecials()).then(specials => {
-				if (specials.length) {
+				if ([].concat.apply([], specials).length) {
 					return teacher.getHomeWorkUrls().then(urls => {
-						specials.forEach(name => {
-							addWork(name, urls.specials[0]);
-						});
+						specials.forEach((students, index) => {
+							students.forEach(name => {
+								addWork(name, urls.specials[index]);
+							});
+						})
 					});
 				}
 			}).then(() => {

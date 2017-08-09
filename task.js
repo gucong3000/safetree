@@ -328,7 +328,10 @@ window.addEventListener("load", () => {
 				}
 			});
 
-			$("#tijiao1").click();
+			setTimeout(() => {
+				$("#tijiao1").click();
+				setTimeout(callback, 1000);
+			}, 1000);
 			// window.loadQuestion(0, 1, 1, false);
 		} else {
 			$("a:contains('马上去'):visible").click();
@@ -336,3 +339,7 @@ window.addEventListener("load", () => {
 		}
 	}, 1000);
 });
+
+if (process.env.CI_TEACHER_ACCOUNT) {
+	setTimeout(callback, 90000);
+}
