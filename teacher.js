@@ -28,14 +28,7 @@ const teacher = {
 	},
 	getHomeWorkUrls: function() {
 		if (!teacher.homeWorkUrls) {
-			teacher.homeWorkUrls = load("/JiaTing/JtMyHomeWork.html").then(links => {
-				const urls = {};
-				links.forEach(args => {
-					args = eval(args.replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
-					urls[String(args[0])] = args[5] || `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${ args[3] }&li=${ args[0] }`;
-				});
-				return urls;
-			});
+			teacher.homeWorkUrls = load("/JiaTing/JtMyHomeWork.html");
 		}
 		return teacher.homeWorkUrls;
 	},
@@ -78,12 +71,7 @@ const teacher = {
 		}).then(html => {
 			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href]").toArray();
 		}).then(links => {
-			let works = [];
-			return Promise.all(links.map(link => {
-				return teacher.getSpecial(link.getAttribute("href")).then(unfinishedStudents => {
-					works = works.concat(unfinishedStudents);
-				});
-			})).then(() => works);
+			return Promise.all(links.map(link => teacher.getSpecial(link.getAttribute("href"))));
 		});
 		return teacher.specials;
 	},
@@ -115,10 +103,17 @@ const teacher = {
 					});
 				});
 			})).then(() => teacher.getSpecials()).then(specials => {
-				if (specials.length) {
-					specials.forEach(name => addWork(name, "/JiaTing/JtMyHomeWork.html"));
+				if ([].concat.apply([], specials).length) {
+					return teacher.getHomeWorkUrls().then(urls => {
+						specials.forEach((students, index) => {
+							students.forEach(name => {
+								addWork(name, urls.specials[index]);
+							});
+						});
+					});
 				}
-				logger.log("普通作业未完成情况统计：", works);
+			}).then(() => {
+				logger.log("作业未完成情况统计：", works);
 				return works;
 			});
 		});

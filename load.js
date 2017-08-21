@@ -2,7 +2,7 @@
 const {
 	remote,
 } = require("electron");
-module.exports = function(src) {
+module.exports = function(src, data) {
 	const isDevToolsOpened = remote.getCurrentWebContents().isDevToolsOpened();
 	return new Promise((resolve, reject) => {
 		const webview = document.createElement("webview");
@@ -15,6 +15,8 @@ module.exports = function(src) {
 		webview.addEventListener("ipc-message", (event) => {
 			if (event.channel === "close") {
 				kill(event.args && event.args[0]);
+			} else if (event.channel === "request-data") {
+				webview.send("data", data);
 			}
 		});
 		webview.addEventListener("did-fail-load", ex => {

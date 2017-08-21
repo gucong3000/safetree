@@ -26,14 +26,16 @@ module.exports = function (name) {
 				if (!works) {
 					return;
 				}
-				return student.login().then(() => {
-					return Promise.all(works.map(student.doWork));
+				return student.login().then(data => {
+					return Promise.all(works.map(work => (
+						student.doWork(work, data)
+					)));
 				});
 			});
 		},
-		doWork: function(work) {
+		doWork: function(work, data) {
 			logger.log(name + "正在完成作业项：" + work.title);
-			return load(work.url).catch(ex => {
+			return load(work.url, data).catch(ex => {
 				logger.error(name, "未能完成作业", work.title, "请稍后重试", ex);
 			});
 		}
