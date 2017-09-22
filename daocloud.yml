@@ -47,12 +47,25 @@ test:
   script:
     - npm start
 
-中山_胡依:
+
+中山_胡敏:
   stage: build
   job_type: test
   allow_failure: true
   env:
-    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1eWkxNDkwMTc5
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1bWluMTk4MDEwMjc=
+  install:
+    - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
+    - npm i
+  script:
+    - npm start
+
+中山_蔡齐心:
+  stage: build
+  job_type: test
+  allow_failure: true
+  env:
+    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNhaXFpeGluMzYzMA==
   install:
     - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
     - npm i
