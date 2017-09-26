@@ -1,3 +1,5 @@
+@echo off
+chcp 65001
 set "CI_TEACHER_ACCOUNT=d3V4aSBoYW5odWFxaWFuZw==" && node_modules\electron\dist\electron .
 set "CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGdvbmdoYW5odWkzNTMx" && node_modules\electron\dist\electron .
 set "CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1bWluMTk4MDEwMjc=" && node_modules\electron\dist\electron .
