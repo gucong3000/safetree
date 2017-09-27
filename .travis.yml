@@ -22,7 +22,7 @@ matrix:
 
 before_install:
   - if [ $TRAVIS_EVENT_TYPE == "cron" ] && [[ $TRAVIS_JOB_NUMBER =~ \.1$ ]]; then
-      curl -X POST "https://openapi.daocloud.io/v1/build-flows/ee270689-b72e-433d-876f-c79c83bf786a/builds" -H "Authorization: token zh1mslu9210c806gpakodlpjalq6mi2f3ia6jrtw" -H "Content-Type: application/json" -d '{"branch":"$TRAVIS_BRANCH"}';
+      npm run daocloud;
     fi
   - rm .npmrc
 
