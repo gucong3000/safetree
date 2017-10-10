@@ -43,8 +43,12 @@ function teacherLogin() {
 }
 
 teacherLogin().then(teacherInfo => {
-	logger.log("教师登陆成功", teacherInfo.truename);
-	return teacher.getStudents();
+	if (teacherInfo && teacherInfo.truename) {
+		logger.log("教师登陆成功", teacherInfo.truename);
+		return teacher.getStudents();
+	} else {
+		console.error(teacherInfo);
+	}
 }).then(students => {
 	logger.log("学生账号清单", students);
 	const select = document.createElement("select");
