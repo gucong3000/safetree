@@ -9,6 +9,7 @@ window.$("input[type=password]").attr("value", 123456);
 let stuList;
 
 function loop(students) {
+	logger.log("剩余人数：", students.length);
 	const student = students.pop();
 	if (!student) {
 		return;
@@ -39,7 +40,9 @@ function loop(students) {
 const userName = localStorage.getItem("teacher_user_name") || "";
 
 function teacherLogin() {
-	return dialogs.prompt("请输入教师用户名", userName).then(teacher.login).catch(teacherLogin);
+	return dialogs.prompt("请输入教师用户名", userName).then(teacher.login).catch(() => {
+		location.reload();
+	});
 }
 
 teacherLogin().then(teacherInfo => {
