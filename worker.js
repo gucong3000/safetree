@@ -30,6 +30,7 @@ function loop(students) {
 		return loop(students);
 	}).catch(ex => {
 		if (ex && ex.userid) {
+			// https://zhongshan.safetree.com.cn/EduAdmin/ClassManagement/StudentPassWordReset?studentid=2023012485
 			logger.error(student.name + "登陆失败，跳过。");
 			return loop(students);
 		}

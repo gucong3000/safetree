@@ -12,5 +12,8 @@ insert_final_newline = true
 tab_width = 4
 trim_trailing_whitespace = true
 
-[{package.json,**.yml}]
+[{package.json,*.yml}]
 indent_style = space
+
+[*.{bat,cmd}]
+end_of_line = crlf
