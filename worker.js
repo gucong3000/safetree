@@ -3,6 +3,7 @@ const teacher = require("./teacher");
 const student = require("./student");
 const dialogs = require("./dialogs");
 const logger = require("./logger");
+const {ipcRenderer} = require("electron");
 
 window.$("input[type=password]").attr("value", 123456);
 
@@ -51,7 +52,8 @@ teacherLogin().then(teacherInfo => {
 		logger.log("教师登陆成功", teacherInfo.truename);
 		return teacher.getStudents();
 	} else {
-		console.error(teacherInfo);
+		logger.error(teacherInfo);
+		throw teacherInfo;
 	}
 }).then(students => {
 	logger.log("学生账号清单", students);
@@ -89,7 +91,8 @@ teacherLogin().then(teacherInfo => {
 	} else {
 		return dialogs.alert("所有同学均已完成作业。");
 	}
-}).then(result => {
-	const {ipcRenderer} = require("electron");
-	ipcRenderer.send("worker.finish", result);
+}).then(() => {
+	ipcRenderer.send("worker.finish", 0);
+}).catch(() => {
+	ipcRenderer.send("worker.finish", 1);
 });

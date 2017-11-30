@@ -3,21 +3,13 @@ image: aheuermann/electron
 env:
   - DISPLAY=:9.0
 
-test:
-  stage: test
-  job_type: test
-  pull_request: true
-  install:
-    - npm i
-  script:
-    - npm test
-
 build:
   stage: build
   job_type: test
   install:
-    - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
     - npm i
   script:
+    - Xvfb -ac -screen scrn 1280x2000x24 :9.0 &
+    - npm test
     - chmod +x run.sh
     - ./run.sh
