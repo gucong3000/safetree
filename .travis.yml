@@ -7,27 +7,16 @@ node_js:
   - "stable"
 
 env:
-  matrix:
-    - CI_TEACHER_ACCOUNT=d3V4aSBoYW5odWFxaWFuZw==
-    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGdvbmdoYW5odWkzNTMx
-    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1bWluMTk4MDEwMjc=
-    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGh1eWkxNDkwMTc5
-    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNhaXFpeGluMzYzMA==
-    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIGNoZW5kb25ncWluMTA3Mg==
-    - CI_TEACHER_ACCOUNT=emhvbmdzaGFuIHpoYW9zaGFubGFu
-    - CI_TEACHER_ACCOUNT=Y2hlbmdkdSB6aGFvbGluZzQwMDQ=
-
-matrix:
-  fast_finish: true
+  - DISPLAY=:99.0
 
 before_install:
   - if [ $TRAVIS_EVENT_TYPE == "cron" ] && [[ $TRAVIS_JOB_NUMBER =~ \.1$ ]]; then
       npm run daocloud;
     fi
   - rm .npmrc
+  - sh -e /etc/init.d/xvfb start
 
 script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
   - npm test
-  - travis_retry npm run -s start
+  - chmod +x run.sh
+  - ./run.sh
