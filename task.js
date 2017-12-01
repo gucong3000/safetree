@@ -118,11 +118,12 @@ function getHomeWorkUrls () {
 }
 
 function ready (callback) {
+	const time = process.env.CI ? 1000 : 200;
 	if (document.readyState === "complete") {
-		setTimeout(callback, 200);
+		setTimeout(callback, time);
 	} else {
 		window.addEventListener("load", () => {
-			setTimeout(callback, 200);
+			setTimeout(callback, time);
 		});
 	}
 }
@@ -160,12 +161,6 @@ ready(() => {
 		// 	document.getElementById(label.htmlFor).type === "radio"
 		// )).click();
 		requestData().then(student => {
-			const grade = [
-				"小学",
-				"小学",
-				"初中",
-				"高中"
-			][parseInt((student.grade - 1) / 3)];
 			[
 				"在规定的地点等候校车，排队上下不拥挤",
 				"儿童安全座椅",
@@ -175,9 +170,12 @@ ready(() => {
 				"系好安全带",
 				"没有电动车",
 				"没有私家车",
-				"步行",
-				grade
-			].forEach(label => {
+				student.grade <= 6 && "小学",
+				student.grade >= 7 && "中学",
+				student.grade >= 7 && student.grade <= 9 && "初中",
+				student.grade >= 10 && student.grade <= 12 && "高中",
+				"步行"
+			].filter(Boolean).forEach(label => {
 				$(`label:contains('${label}'):visible`).click();
 			});
 
@@ -207,7 +205,7 @@ ready(() => {
 		}, 200);
 		const timer2 = setTimeout(() => {
 			location.href = location.pathname.replace(/(?:_vr|\d*)(\.\w+)$/, "2$1");
-		}, 3000);
+		}, process.env.CI ? 3000 : 800);
 		window.onbeforeunload = () => {
 			clearInterval(timer1);
 			clearTimeout(timer2);
