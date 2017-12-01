@@ -1,11 +1,13 @@
 "use strict";
+/* eslint no-eval: "off" */
+const dialogs = require("./dialogs");
 
-function getRandomItemOfArray(arr) {
+function getRandomItemOfArray (arr) {
 	return arr[Math.floor(Math.random() * arr.length)];
 }
 
 const specials = {
-	"性别": student => "男女"[student.sex - 1],
+	"性别": student => +student.sex ? "男" : "女",
 	"你的学校属于什么位置": getRandomItemOfArray(["城市", "农村"]),
 	"和谁在一起生活": getRandomItemOfArray(["父母外出", "在父母所在", "本地生活"]),
 	"你家是否有灭火器": "没有",
@@ -43,15 +45,37 @@ const specials = {
 	"为做到防患于未然": "制定家庭疏散预案并进行演练",
 	"正确的逃生方法是": "迅速逃生",
 	"高层建筑失火时": "从疏散通道逃离",
+	"你是否有闯红灯的行为": "没有",
+	"当你看到红灯，但路上没有车时，你会过马路吗": "不会",
+	"你过马路时是否一直都走斑马线": "是",
+	"你家人开车时，有下列哪些行为": "以上行为都没有",
+	"你从哪里学习交通安全知识": "学校安全教育",
+	"你认为你们学校开展的交通安全教育效果怎么样": "很好",
+	"你认为有必要对交通安全知识进行宣传教育吗": "有",
+	"你认为在提升学生交通安全意识问题上，谁的作用最重要": "自身的意识",
+	"交通事故的报警电话是": "122",
+	"才能上路骑自行车": "12",
+	"你是否有过翻越道路中央安全护栏的行为": "没有",
+	"在车辆没有停稳之前": "不准开车门和上下人",
+	"放学路上，小明准备过马路时红灯亮了，这时他应该": "不管有无车辆，都等交通灯变为绿灯时再通过",
+	"在没有施划人行横道的公路上，乘车人从公共汽车下车后横过公路时，您认为下列做法正确的是": "车开走且确认安全后再通过",
+	"亮亮要去马路对面的超市买东西，可是路口没有红绿灯也没有斑马线，这时你认为他怎么做才是最安全的": "在路口左看右看，反复确认安全后快速通过",
+	"乘坐大巴车时，如果遇到事故被困车内，我们可以利用哪些方法逃出车外": "以上都可以"
 };
 
 window.open = url => {
 	location.href = url;
 };
 
-window.alert = () => {};
+window.alert = msg => {
+	if (/已/.test(msg)) {
+		callback();
+	} else {
+		dialogs.alert(msg);
+	}
+};
 
-function callback(val) {
+function callback (val) {
 	if (window.callPhantom) {
 		window.callPhantom(val);
 	} else if (window.require) {
@@ -60,7 +84,7 @@ function callback(val) {
 	}
 }
 
-function requestData() {
+function requestData () {
 	return new Promise(resolve => {
 		const {ipcRenderer} = require("electron");
 		ipcRenderer.once("data", (e, data) => {
@@ -70,21 +94,21 @@ function requestData() {
 	});
 }
 
-function getHomeWorkUrls() {
+function getHomeWorkUrls () {
 	let links = document.querySelectorAll("table tr a[name^=workToUrl]");
 	if (links && links.length) {
 		const urls = {
-			specials: [],
+			specials: []
 		};
 		links = Array.from(links).map(a => {
 			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
 			if (args[5]) {
 				urls.specials.push({
 					title: a.parentNode.parentNode.children[1].textContent.trim(),
-					url: args[5],
+					url: args[5]
 				});
 			} else {
-				urls[String(args[0])] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${ args[3] }&li=${ args[0] }`;
+				urls[String(args[0])] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${args[3]}&li=${args[0]}`;
 			}
 		});
 		callback(urls);
@@ -93,89 +117,102 @@ function getHomeWorkUrls() {
 	}
 }
 
-function ready(callback) {
+function ready (callback) {
 	if (document.readyState === "complete") {
-		callback();
+		setTimeout(callback, 200);
 	} else {
-		window.addEventListener("load", callback);
+		window.addEventListener("load", () => {
+			setTimeout(callback, 200);
+		});
 	}
 }
 
 ready(() => {
-	setTimeout(() => {
-		const $ = window.$;
+	const $ = window.$;
 
-		function whaitResult() {
-			if ($("#yes:visible").length) {
-				callback();
-			} else {
-				setTimeout(whaitResult, 600);
-			}
-		}
-		if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
-			getHomeWorkUrls();
-		} else if (window.ShowTestPaper) {
-			window.getAnswers = function(answers) {
-				setTimeout(function() {
-					$(".bto_testbox input[type=radio]").prop("checked", function(i) {
-						return !!+answers.Rows[i].istrue;
-					});
-					$(".bto_testbox .btn_submit").click();
-					whaitResult();
-				}, 600);
-			};
-
-			window.eval(window.ShowTestPaper.toString().replace(/TestPaperThreelistGet2.*?\n?.*?if\s+\(.*?\b(\w+)\.Rows\.length.*?\)\s*\{/, function(s, dataVarName) {
-				return s + "getAnswers(" + dataVarName + ");";
-			}));
-			window.ShowTestPaper();
-		} else if (window.loadQuestion) {
-			window.loadQuestion(0, 99, 1, false);
-			$("label:visible").filter((i, label) => (
-				document.getElementById(label.htmlFor).type === "radio"
-			)).click();
-			requestData().then(student => {
-				const sex = "男女"[student.sex - 1];
-				const grade = [
-					"小学",
-					"小学",
-					"初中",
-					"高中",
-				][parseInt((student.grade - 1) / 3)];
-				[
-					sex,
-					grade,
-				].forEach(label => {
-					$(`label:contains('${label}'):visible`).click();
-				});
-
-				for (const q in specials) {
-					let a = specials[q];
-					if (typeof a === "function") {
-						a = a(student);
-					}
-					const dl = $(`dt:contains('${q}'):visible`).first().parent("dl");
-					if (Array.isArray(a)) {
-						a.forEach(a => {
-							dl.find(`label:contains('${a}'):visible`).click();
-						});
-					} else {
-						dl.find(`label:contains('${a}'):visible`).first().click();
-					}
-				}
-
-				setTimeout(() => {
-					$("a:contains('提交')").click();
-					setTimeout(callback, 1000);
-				}, 1000);
-			});
+	function whaitResult () {
+		if ($("#yes:visible,#resultScore:visible").length) {
+			callback();
 		} else {
-			$("a:contains('马上去'), a:contains('请签'), a:contains('请点')").filter(":visible").first().click();
-			setTimeout(() => {
-				location.href = $("a:contains('二'):visible").prop("href") || location.pathname.replace(/\d*(\.\w+)$/, "2$1");
-			}, 1000);
+			setTimeout(whaitResult, 200);
 		}
-	}, 1000);
+	}
+	if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
+		getHomeWorkUrls();
+	} else if (window.ShowTestPaper) {
+		window.getAnswers = function (answers) {
+			setTimeout(function () {
+				$(".bto_testbox input[type=radio]").prop("checked", function (i) {
+					return !!+answers.Rows[i].istrue;
+				});
+				$(".bto_testbox .btn_submit").click();
+				whaitResult();
+			}, 600);
+		};
+
+		window.eval(window.ShowTestPaper.toString().replace(/TestPaperThreelistGet2.*?\n?.*?if\s+\(.*?\b(\w+)\.Rows\.length.*?\)\s*\{/, function (s, dataVarName) {
+			return s + "getAnswers(" + dataVarName + ");";
+		}));
+		window.ShowTestPaper();
+	} else if (window.loadQuestion) {
+		window.loadQuestion(0, 99, 1, false);
+		// $("label:visible").filter((i, label) => (
+		// 	document.getElementById(label.htmlFor).type === "radio"
+		// )).click();
+		requestData().then(student => {
+			const grade = [
+				"小学",
+				"小学",
+				"初中",
+				"高中"
+			][parseInt((student.grade - 1) / 3)];
+			[
+				"在规定的地点等候校车，排队上下不拥挤",
+				"儿童安全座椅",
+				"从不在车上饮食",
+				"从不骑电动车",
+				"一直都系安全带",
+				"系好安全带",
+				"没有电动车",
+				"没有私家车",
+				"步行",
+				grade
+			].forEach(label => {
+				$(`label:contains('${label}'):visible`).click();
+			});
+
+			for (const q in specials) {
+				let a = specials[q];
+				if (typeof a === "function") {
+					a = a(student);
+				}
+				const dl = $(`dt:contains('${q}'):visible`).first().parent("dl");
+				if (Array.isArray(a)) {
+					a.forEach(a => {
+						dl.find(`label:contains('${a}'):visible`).click();
+					});
+				} else {
+					dl.find(`label:contains('${a}'):visible`).first().click();
+				}
+			}
+
+			setTimeout(() => {
+				$("a:contains('提交')").click();
+				whaitResult();
+			}, 1000);
+		});
+	} else {
+		const timer1 = setInterval(() => {
+			$("a:contains('马上去'), a:contains('请签'), a:contains('请点')").filter(":visible").first().click();
+		}, 200);
+		const timer2 = setTimeout(() => {
+			location.href = location.pathname.replace(/(?:_vr|\d*)(\.\w+)$/, "2$1");
+		}, 3000);
+		window.onbeforeunload = () => {
+			clearInterval(timer1);
+			clearTimeout(timer2);
+		};
+	}
 });
 
 if (process.env.CI_TEACHER_ACCOUNT) {

@@ -1,8 +1,9 @@
 "use strict";
+const path = require("path");
 const {
-	remote,
+	remote
 } = require("electron");
-module.exports = function(src, data) {
+module.exports = function (src, data) {
 	const isDevToolsOpened = remote.getCurrentWebContents().isDevToolsOpened();
 	return new Promise((resolve, reject) => {
 		const webview = document.createElement("webview");
@@ -27,7 +28,7 @@ module.exports = function(src, data) {
 		webview.nodeintegration = true;
 		webview.disablewebsecurity = true;
 		webview.allowpopups = true;
-		webview.preload = __dirname + "/task.js";
+		webview.preload = path.join(__dirname, "/task.js");
 		webview.style.position = "absolute";
 		webview.style.top = 0;
 		webview.style.left = 0;
@@ -64,7 +65,7 @@ module.exports = function(src, data) {
 		}, 800);
 		document.body.appendChild(wrap);
 
-		function kill(data) {
+		function kill (data) {
 			wrap.style.left = "-500%";
 			setTimeout(() => {
 				webview.delete();
@@ -72,6 +73,5 @@ module.exports = function(src, data) {
 				resolve(data);
 			}, 200);
 		}
-
 	});
 };

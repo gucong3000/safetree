@@ -6,7 +6,7 @@ const logger = require("./logger");
 const $ = window.$;
 
 const teacher = {
-	login: function(userName, password) {
+	login: function (userName, password) {
 		if (teacher.data) {
 			return Promise.resolve(teacher.data);
 		}
@@ -17,7 +17,7 @@ const teacher = {
 			return info;
 		});
 	},
-	getUnfinishedStudents: function(url) {
+	getUnfinishedStudents: function (url) {
 		return request.post(url).then(html => {
 			return $(html).find("tr").filter((i, tr) => {
 				return !tr.children[3].innerText.trim();
@@ -26,13 +26,13 @@ const teacher = {
 			}).toArray();
 		});
 	},
-	getHomeWorkUrls: function() {
+	getHomeWorkUrls: function () {
 		if (!teacher.homeWorkUrls) {
 			teacher.homeWorkUrls = load("/JiaTing/JtMyHomeWork.html");
 		}
 		return teacher.homeWorkUrls;
 	},
-	getUnfinishedWorks: function() {
+	getUnfinishedWorks: function () {
 		return request.get("/EduAdmin/SkillCondition/SkillInfo?s1=2&s2=-1").then(html => {
 			const works = {};
 			$(html).find("tr").filter((i, tr) => {
@@ -45,14 +45,14 @@ const teacher = {
 					const checkUrl = links[links.length - 1].getAttribute("href");
 					works[checkUrl] = {
 						title,
-						id,
+						id
 					};
 				}
 			});
 			return works;
 		});
 	},
-	getSpecial: function(url) {
+	getSpecial: function (url) {
 		return request.post(url).then(html => {
 			return $(html).find("tr").filter((i, tr) => {
 				return tr.children[2] && tr.children[2].innerText.trim() === "未完成";
@@ -61,7 +61,7 @@ const teacher = {
 			}).toArray();
 		});
 	},
-	getSpecials: function() {
+	getSpecials: function () {
 		if (teacher.specials) {
 			return teacher.specials;
 		}
@@ -75,7 +75,7 @@ const teacher = {
 		});
 		return teacher.specials;
 	},
-	getWorks: function() {
+	getWorks: function () {
 		if (teacher.works) {
 			return teacher.works;
 		}
@@ -120,7 +120,7 @@ const teacher = {
 
 		return teacher.works;
 	},
-	getStudents: function() {
+	getStudents: function () {
 		if (teacher.students) {
 			return teacher.students;
 		}

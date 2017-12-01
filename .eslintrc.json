@@ -1,4 +1,8 @@
 {
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "script"
+    },
 	"env": {
 		"browser": true,
 		"es6": true,
@@ -6,7 +10,7 @@
 		"shared-node-browser": true
 	},
 	"extends": [
-		"eslint:recommended"
+		"standard"
 	],
 	"root": true,
 	"rules": {
@@ -31,6 +35,9 @@
 		"eqeqeq": [
 			"error",
 			"smart"
+		],
+		"no-tabs": [
+			"off"
 		],
 		"indent": [
 			"error",

@@ -9,7 +9,7 @@ window.$("input[type=password]").attr("value", 123456);
 
 let stuList;
 
-function loop(students) {
+function loop (students) {
 	logger.log("剩余人数：", students.length);
 	const student = students.pop();
 	if (!student) {
@@ -41,7 +41,7 @@ function loop(students) {
 
 const userName = localStorage.getItem("teacher_user_name") || "";
 
-function teacherLogin() {
+function teacherLogin () {
 	return dialogs.prompt("请输入教师用户名", userName).then(teacher.login).catch(() => {
 		location.reload();
 	});
@@ -49,7 +49,7 @@ function teacherLogin() {
 
 teacherLogin().then(teacherInfo => {
 	if (teacherInfo && teacherInfo.truename) {
-		logger.log("教师登陆成功", teacherInfo.truename);
+		logger.log(`教师 ${teacherInfo.truename}(${teacherInfo.username}) 成功登陆${teacherInfo.baseurl}`);
 		return teacher.getStudents();
 	} else {
 		logger.error(teacherInfo);
@@ -81,7 +81,7 @@ teacherLogin().then(teacherInfo => {
 }).then(works => {
 	const unfinishedStudents = Object.keys(works);
 	if (unfinishedStudents.length) {
-		return dialogs.confirm(`发现${ unfinishedStudents.length }名同学未完作业，是否开始答题？`).then(ok => {
+		return dialogs.confirm(`发现${unfinishedStudents.length}名同学未完作业，是否开始答题？`).then(ok => {
 			if (ok) {
 				return loop(unfinishedStudents.map(student)).then(() => {
 					return dialogs.alert("所有同学的作业都做完了。");

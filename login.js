@@ -7,7 +7,7 @@ module.exports = function (userName, password) {
 	}
 	password = password || "123456";
 	return speciallogin(userName, password).then(info => {
-		if ("/MainPage.html" !== location.pathname) {
+		if (location.pathname !== "/MainPage.html") {
 			const url = "/MainPage.html";
 			return request.get(url).then(html => {
 				const style = document.querySelector("head style:last-of-type");
@@ -28,7 +28,7 @@ module.exports = function (userName, password) {
 	});
 };
 
-function speciallogin(userName, password) {
+function speciallogin (userName, password) {
 	return request.getJSON("//speciallogin.safetree.com.cn/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
 		account: userName,
 		password,
@@ -36,7 +36,7 @@ function speciallogin(userName, password) {
 	}).then(getUserInfo);
 }
 
-function getUserInfo(data) {
+function getUserInfo (data) {
 	if (+data.userid >= 0) {
 		return request.getJSON("/Education/Special.asmx/GetUserInfo?jsoncallback=?", {
 			r: Math.random()

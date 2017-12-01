@@ -4,20 +4,20 @@ const electron = require("electron");
 const {
 	BrowserWindow,
 	ipcMain,
-	app,
+	app
 } = electron;
 
 let mainWindow = null;
 
-function atob(str) {
-	return new Buffer(str, "base64").toString("binary");
+function atob (str) {
+	return Buffer.from(str, "base64").toString("binary");
 }
 
-function worker(webContents) {
-	webContents.executeJavaScript(`require(${ JSON.stringify(path.join(__dirname, "worker.js")) })`);
+function worker (webContents) {
+	webContents.executeJavaScript(`require(${JSON.stringify(path.join(__dirname, "worker.js"))})`);
 }
 
-function initializeContents(webContents) {
+function initializeContents (webContents) {
 	webContents.on("did-finish-load", e => worker(e.sender));
 	webContents.on("new-window", e => initializeContents(e.sender));
 }
@@ -29,7 +29,7 @@ function initialize () {
 			minWidth: 680,
 			height: 840,
 			title: app.getName(),
-			show: !process.env.CI_TEACHER_ACCOUNT,
+			show: !process.env.CI
 		};
 
 		mainWindow = new BrowserWindow(windowOptions);
@@ -46,11 +46,10 @@ function initialize () {
 		});
 
 		if (process.env.CI_TEACHER_ACCOUNT) {
-
 			let timerExit;
 			let timerReload;
 
-			const resetTimeout = function() {
+			const resetTimeout = function () {
 				clearTimeout(timerExit);
 				clearInterval(timerReload);
 				// 程序连续30分钟无响应则退出程序
@@ -102,7 +101,7 @@ function initialize () {
 
 		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL(`https://${ city }.safetree.com.cn/MainPage.html`);
+		mainWindow.loadURL(`https://${city}.safetree.com.cn/MainPage.html`);
 	}
 
 	app.on("ready", function () {
