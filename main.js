@@ -75,9 +75,9 @@ function initialize () {
 				resetTimeout();
 				console.log.apply(console, args);
 			});
-			ipcMain.on("worker.finish", () => {
+			ipcMain.on("worker.finish", exitCode => {
 				resetTimeout();
-				app.exit();
+				app.exit(exitCode);
 			});
 			const account = atob(process.env.CI_TEACHER_ACCOUNT).split(/\s+/g);
 			if (!city && !/\d/.test(account[0])) {

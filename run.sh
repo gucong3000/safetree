@@ -2,7 +2,7 @@
 
 while read line
 do
-  export "CI_TEACHER_ACCOUNT=$line"
+	export "CI_TEACHER_ACCOUNT=$line"
 	for VARIABLE in {1..9}
 	do
 		echo -e "$CI_TEACHER_ACCOUNT $VARIABLE"
