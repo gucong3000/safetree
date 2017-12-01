@@ -3,7 +3,7 @@ safetree
 
 [![Travis](https://img.shields.io/travis/gucong3000/safetree.svg)](https://travis-ci.org/gucong3000/safetree)
 
-中国安全教育网全自动答题工具
+学校安全教育平台全自动答题工具
 
 ## 安装
 
