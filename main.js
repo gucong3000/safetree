@@ -75,8 +75,7 @@ function initialize () {
 				resetTimeout();
 				console.log.apply(console, args);
 			});
-			ipcMain.on("worker.finish", exitCode => {
-				resetTimeout();
+			ipcMain.on("worker.finish", (event, exitCode) => {
 				app.exit(exitCode);
 			});
 			const account = atob(process.env.CI_TEACHER_ACCOUNT).split(/\s+/g);

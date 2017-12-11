@@ -56,7 +56,7 @@ teacherLogin().then(teacherInfo => {
 		throw teacherInfo;
 	}
 }).then(students => {
-	logger.log("学生账号清单", students);
+	logger.log("学生账号清单", students, Object.keys(students).length);
 	const select = document.createElement("select");
 	Object.keys(students).forEach((name, i) => {
 		select.options[i] = new Option(name, students[name]);
@@ -93,6 +93,7 @@ teacherLogin().then(teacherInfo => {
 	}
 }).then(() => {
 	ipcRenderer.send("worker.finish", 0);
-}).catch(() => {
+}, error => {
+	logger.error(error);
 	ipcRenderer.send("worker.finish", 1);
 });

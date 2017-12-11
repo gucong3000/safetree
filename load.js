@@ -3,6 +3,7 @@ const path = require("path");
 const {
 	remote
 } = require("electron");
+
 module.exports = function (src, data) {
 	const isDevToolsOpened = remote.getCurrentWebContents().isDevToolsOpened();
 	return new Promise((resolve, reject) => {
@@ -12,6 +13,7 @@ module.exports = function (src, data) {
 			if (isDevToolsOpened) {
 				webview.openDevTools();
 			}
+			webview.executeJavaScript(`require(${JSON.stringify(path.join(__dirname, "task.js"))})`);
 		});
 		webview.addEventListener("ipc-message", (event) => {
 			if (event.channel === "close") {
@@ -28,7 +30,6 @@ module.exports = function (src, data) {
 		webview.nodeintegration = true;
 		webview.disablewebsecurity = true;
 		webview.allowpopups = true;
-		webview.preload = path.join(__dirname, "/task.js");
 		webview.style.position = "absolute";
 		webview.style.top = 0;
 		webview.style.left = 0;

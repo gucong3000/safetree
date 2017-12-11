@@ -33,6 +33,7 @@ const teacher = {
 		return teacher.homeWorkUrls;
 	},
 	getUnfinishedWorks: function () {
+		logger.log("教师正在检查未完成的普通作业。");
 		return request.get("/EduAdmin/SkillCondition/SkillInfo?s1=2&s2=-1").then(html => {
 			const works = {};
 			$(html).find("tr").filter((i, tr) => {
@@ -80,7 +81,6 @@ const teacher = {
 			return teacher.works;
 		}
 		teacher.works = teacher.login().then(() => {
-			logger.log("教师正在检查未完成的普通作业。");
 			return teacher.getUnfinishedWorks();
 		}).then(unfinishedWorks => {
 			const works = {};
