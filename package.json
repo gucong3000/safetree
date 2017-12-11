@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "dialogs": "^1.1.20",
-    "electron": "^1.7.9"
+    "electron": "^1.8.1"
   },
   "description": "学校安全教育平台全自动答题工具",
   "devDependencies": {
