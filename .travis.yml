@@ -13,7 +13,6 @@ before_install:
   - if [ $TRAVIS_EVENT_TYPE == "cron" ] && [[ $TRAVIS_JOB_NUMBER =~ \.1$ ]]; then
       npm run daocloud;
     fi
-  - rm .npmrc
   - sh -e /etc/init.d/xvfb start
 
 script:
