@@ -98,15 +98,18 @@ function getHomeWorkUrls () {
 	let links = document.querySelectorAll("table tr a[name^=workToUrl]");
 	if (links && links.length) {
 		const urls = {
-			specials: []
+			specials: {}
 		};
 		links = Array.from(links).map(a => {
 			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
 			if (args[5]) {
-				urls.specials.push({
-					title: a.parentNode.parentNode.children[1].textContent.trim(),
+				const title = a.parentNode.parentNode.children[1].innerText.trim().replace(/^第(\d+)期[：:]\s*/, "");
+				const id = RegExp.$1;
+				urls.specials[id] = {
+					expired: /不记录数据/.test(a.parentNode.parentNode.children[4].innerText),
+					title: title,
 					url: args[5]
-				});
+				};
 			} else {
 				urls[String(args[0])] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${args[3]}&li=${args[0]}`;
 			}

@@ -72,7 +72,14 @@ const teacher = {
 		}).then(html => {
 			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href]").toArray();
 		}).then(links => {
-			return Promise.all(links.map(link => teacher.getSpecial(link.getAttribute("href"))));
+			const works = {};
+			return Promise.all(links.map(link => {
+				return teacher.getSpecial(link.getAttribute("href")).then(names => {
+					if (names.length) {
+						works[link.innerText.trim().replace(/^第(\d+).+?$/, "$1")] = names;
+					}
+				});
+			})).then(() => works);
 		});
 		return teacher.specials;
 	},
@@ -102,12 +109,20 @@ const teacher = {
 						names.forEach(name => addWork(name, work));
 					});
 				});
-			})).then(() => teacher.getSpecials()).then(specials => {
-				if ([].concat.apply([], specials).length) {
+			})).then(
+				teacher.getSpecials
+			).then(specials => {
+				if (Object.keys(specials).length) {
 					return teacher.getHomeWorkUrls().then(urls => {
-						specials.forEach((students, index) => {
-							students.forEach(name => {
-								addWork(name, urls.specials[index]);
+						Object.keys(specials).forEach(id => {
+							const work = urls.specials[id];
+							if (work.expired) {
+								logger.log(`专题作业《${work.title}》已过期，跳过`);
+								return;
+							}
+
+							specials[id].forEach(name => {
+								addWork(name, work);
 							});
 						});
 					});

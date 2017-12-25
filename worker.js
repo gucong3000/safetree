@@ -49,7 +49,7 @@ function teacherLogin () {
 
 teacherLogin().then(teacherInfo => {
 	if (teacherInfo && teacherInfo.truename) {
-		logger.log(`教师 ${teacherInfo.truename}(${teacherInfo.username}) 成功登陆${teacherInfo.baseurl}`);
+		logger.log(`教师 ${teacherInfo.truename}(${teacherInfo.username}) 成功登陆 ${teacherInfo.baseurl}`);
 		return teacher.getStudents();
 	} else {
 		logger.error(teacherInfo);
