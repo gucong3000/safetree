@@ -25,7 +25,6 @@
     "url": "git+https://github.com/gucong3000/safetree.git"
   },
   "scripts": {
-    "daocloud": "curl -X POST \"https://openapi.daocloud.io/v1/build-flows/ee270689-b72e-433d-876f-c79c83bf786a/builds\" -H \"Authorization: token zh1mslu9210c806gpakodlpjalq6mi2f3ia6jrtw\" -H \"Content-Type: application/json\" -d '{\"branch\":\"master\"}'",
     "start": "electron .",
     "test": "eslint ."
   },
