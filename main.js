@@ -18,7 +18,7 @@ function worker (webContents) {
 }
 
 function initializeContents (webContents) {
-	webContents.on("did-finish-load", e => worker(e.sender));
+	webContents.on("dom-ready", e => worker(e.sender));
 	webContents.on("new-window", e => initializeContents(e.sender));
 }
 
@@ -29,6 +29,10 @@ function initialize () {
 			minWidth: 680,
 			height: 840,
 			title: app.getName(),
+			webPreferences: {
+				webSecurity: false,
+				images: !process.env.CI
+			},
 			show: !process.env.CI
 		};
 

@@ -42,6 +42,15 @@ function loop (students) {
 const userName = localStorage.getItem("teacher_user_name") || "";
 
 function teacherLogin () {
+	if (location.pathname === "/MainPage.html" && location.hash) {
+		const currUserName = location.hash.slice(1);
+		location.hash = "";
+
+		return teacher.login(currUserName).catch(() => {
+			location.href = location.pathname;
+		});
+	}
+
 	return dialogs.prompt("请输入教师用户名", userName).then(teacher.login).catch(() => {
 		location.reload();
 	});

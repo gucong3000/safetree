@@ -1,5 +1,4 @@
 "use strict";
-/* eslint no-eval: "off" */
 const dialogs = require("./dialogs");
 
 function getRandomItemOfArray (arr) {
@@ -101,6 +100,7 @@ function getHomeWorkUrls () {
 			specials: {}
 		};
 		links = Array.from(links).map(a => {
+			// eslint-disable-next-line no-eval
 			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
 			if (args[5]) {
 				const title = a.parentNode.parentNode.children[1].innerText.trim().replace(/^第(\d+)期[：:]\s*/, "");
@@ -154,6 +154,7 @@ ready(() => {
 			}, 600);
 		};
 
+		// eslint-disable-next-line no-eval
 		window.eval(window.ShowTestPaper.toString().replace(/TestPaperThreelistGet2.*?\n?.*?if\s+\(.*?\b(\w+)\.Rows\.length.*?\)\s*\{/, function (s, dataVarName) {
 			return s + "getAnswers(" + dataVarName + ");";
 		}));
