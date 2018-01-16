@@ -76,7 +76,7 @@ teacherLogin().then(teacherInfo => {
 	// };
 
 	select.style.position = "absolute";
-	select.style.height = "135px";
+	select.style.height = "100%";
 	select.style.left = 0;
 	select.style.top = 0;
 
@@ -84,6 +84,7 @@ teacherLogin().then(teacherInfo => {
 	// select.disabled = true;
 	setTimeout(() => {
 		document.documentElement.lastChild.appendChild(select);
+		window.$(".wechat-box").hide();
 	}, 1000);
 	stuList = select;
 	return teacher.getWorks();

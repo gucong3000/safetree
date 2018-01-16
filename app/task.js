@@ -1,5 +1,6 @@
 "use strict";
 const dialogs = require("./dialogs");
+const request = require("./request");
 
 function getRandomItemOfArray (arr) {
 	return arr[Math.floor(Math.random() * arr.length)];
@@ -161,6 +162,7 @@ ready(() => {
 		window.ShowTestPaper();
 	} else if (window.loadQuestion) {
 		window.loadQuestion(0, 99, 1, false);
+		window.questionMust = () => true;
 		// $("label:visible").filter((i, label) => (
 		// 	document.getElementById(label.htmlFor).type === "radio"
 		// )).click();
@@ -208,7 +210,28 @@ ready(() => {
 			$("a:contains('马上去'), a:contains('请签'), a:contains('请点')").filter(":visible").first().click();
 		}, 200);
 		const timer2 = setTimeout(() => {
-			location.href = location.pathname.replace(/(?:_vr|\d*)(\.\w+)$/, "2$1");
+			const urls = {
+				"_two$1": /_one(\.\w+)$/,
+				"2$1": /(?:_vr|\d+)(\.\w+)$/,
+				"_three$1": /_two(\.\w+)$/
+			};
+
+			let newUrl = $(".container a:contains('二')").prop("href");
+
+			if (!newUrl) {
+				Object.keys(urls).some(key => {
+					const reg = urls[key];
+					if (reg.test(location.pathname)) {
+						newUrl = location.pathname.replace(reg, key);
+						return true;
+					}
+				});
+			}
+			if (newUrl) {
+				request.get(newUrl).then(() => {
+					location.href = newUrl;
+				});
+			}
 		}, process.env.CI ? 3000 : 800);
 		window.onbeforeunload = () => {
 			clearInterval(timer1);

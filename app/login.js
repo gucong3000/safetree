@@ -9,10 +9,7 @@ module.exports = function (userName, password) {
 	return speciallogin(userName, password).then(info => {
 		if (info.baseurl.includes(location.host)) {
 			if (location.pathname === "/MainPage.html") {
-				const nameWrap = document.querySelector(".header-top .header-left+*");
-				if (nameWrap) {
-					nameWrap.innerHTML = "欢迎你，" + info.truename;
-				}
+				window.$(".header-top .header-left~*:contains('欢迎')").html("欢迎您，" + info.truename);
 			} else {
 				const url = "/MainPage.html";
 				return request.get(url).then(html => {
@@ -43,7 +40,7 @@ function speciallogin (userName, password) {
 				Object.assign(data, info)
 			));
 		}
-		throw data;
+		throw new Error(userName + " 登录失败！");
 	});
 }
 
