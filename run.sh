@@ -6,7 +6,7 @@ do
 	for VARIABLE in {1..9}
 	do
 		echo -e "$CI_TEACHER_ACCOUNT $VARIABLE"
-		./node_modules/electron/dist/electron . && sleep 5 && break
+		npm run -s start && sleep 5 && break
 		sleep 1
 	done
 done < account.txt

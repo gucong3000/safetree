@@ -1,0 +1,28 @@
+version: "{build}"
+skip_branch_with_pr: true
+skip_tags: true
+build: off
+
+environment:
+  nodejs_version: stable
+
+platform:
+  # - x64
+  - x86
+
+# Install scripts. (runs after repo cloning)
+install:
+  # install Node.js
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  # install modules
+  - npm i
+
+# to run your custom scripts instead of automatic tests
+test_script:
+  - npm run test
+  - npm run build
+
+# to run your custom scripts instead of provider deployments
+after_test:
+  - 7z a setup.zip dist/*.exe
+  - appveyor PushArtifact setup.zip

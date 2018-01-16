@@ -1,5 +1,4 @@
 "use strict";
-const path = require("path");
 const {
 	remote
 } = require("electron");
@@ -13,7 +12,7 @@ module.exports = function (src, data) {
 			if (isDevToolsOpened) {
 				webview.openDevTools();
 			}
-			webview.executeJavaScript(`require(${JSON.stringify(path.join(__dirname, "task.js"))})`);
+			webview.executeJavaScript(`require(${JSON.stringify(require.resolve("./task.js"))})`);
 		});
 		webview.addEventListener("ipc-message", (event) => {
 			if (event.channel === "close") {

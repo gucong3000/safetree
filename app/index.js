@@ -1,5 +1,4 @@
 "use strict";
-const path = require("path");
 const electron = require("electron");
 const {
 	BrowserWindow,
@@ -14,7 +13,7 @@ function atob (str) {
 }
 
 function worker (webContents) {
-	webContents.executeJavaScript(`require(${JSON.stringify(path.join(__dirname, "worker.js"))})`);
+	webContents.executeJavaScript(`require(${JSON.stringify(require.resolve("./worker.js"))})`);
 }
 
 function initializeContents (webContents) {

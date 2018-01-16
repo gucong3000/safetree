@@ -1,0 +1,19 @@
+{
+  "author": "gucong",
+  "bugs": {
+    "url": "https://github.com/gucong3000/safetree/issues"
+  },
+  "dependencies": {
+    "dialogs": "^1.1.20"
+  },
+  "description": "学校安全教育平台全自动答题工具",
+  "homepage": "https://github.com/gucong3000/safetree#readme",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "safetree",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gucong3000/safetree.git"
+  },
+  "version": "1.0.0"
+}

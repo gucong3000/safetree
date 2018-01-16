@@ -3,12 +3,10 @@
   "bugs": {
     "url": "https://github.com/gucong3000/safetree/issues"
   },
-  "dependencies": {
-    "dialogs": "^1.1.20",
-    "electron": "^1.8.1"
-  },
   "description": "学校安全教育平台全自动答题工具",
   "devDependencies": {
+    "electron": "^1.8.1",
+    "electron-builder": "^19.53.6",
     "eslint": "^4.13.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.8.0",
@@ -25,8 +23,10 @@
     "url": "git+https://github.com/gucong3000/safetree.git"
   },
   "scripts": {
-    "start": "electron .",
-    "test": "eslint ."
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder",
+    "start": "electron app/",
+    "test": "eslint \"app/*.js\""
   },
   "version": "1.0.0"
 }

@@ -69,4 +69,7 @@ typings/
 !.vscode/extensions.json
 .history
 
+
 # End of https://www.gitignore.io/api/node,visualstudiocode
+
+dist/
