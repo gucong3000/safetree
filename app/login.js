@@ -15,10 +15,11 @@ module.exports = function (userName, password) {
 				return request.get(url).then(html => {
 					const style = document.querySelector("head style:last-of-type");
 					history.pushState(info, "安全教育平台", url);
-					document.write(html);
+					document.write(html.replace(/\s*<script\b.*?>[\s\S]*?<\/script>/ig, ""));
 					if (style) {
 						document.documentElement.firstChild.appendChild(style);
 					}
+				}).catch(() => {}).then(() => {
 					return info;
 				});
 			}
