@@ -11,7 +11,7 @@ let stuList;
 
 function loop (students) {
 	logger.log("剩余人数：", students.length);
-	const student = students.pop();
+	const student = students.shift();
 	if (!student) {
 		return;
 	}

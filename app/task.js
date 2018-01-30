@@ -1,7 +1,9 @@
 "use strict";
 const dialogs = require("./dialogs");
 const request = require("./request");
-
+if (!window.$) {
+	window.$ = require("jquery");
+}
 function getRandomItemOfArray (arr) {
 	return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -142,6 +144,13 @@ ready(() => {
 			setTimeout(whaitResult, 200);
 		}
 	}
+
+	if (window.SpecialSign) {
+		[1, 2, 3].forEach(workStep => {
+			window.SpecialSign(workStep);
+		});
+	}
+
 	if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
 		getHomeWorkUrls();
 	} else if (window.ShowTestPaper) {
