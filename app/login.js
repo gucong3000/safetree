@@ -31,7 +31,7 @@ module.exports = function (userName, password) {
 };
 
 function speciallogin (userName, password) {
-	return request.getJSON("//speciallogin.safetree.com.cn/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
+	return request.getJSON(location.host.replace(/^\w+/, "//speciallogin") + "/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
 		account: userName,
 		password,
 		r: Math.random()
