@@ -8,7 +8,7 @@
     "electron": "^1.8.1",
     "electron-builder": "^19.56.0",
     "eslint": "^4.13.1",
-    "eslint-config-standard": "^10.2.1",
+    "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^6.0.0",
     "eslint-plugin-promise": "^3.6.0",
