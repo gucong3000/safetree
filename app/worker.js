@@ -6,6 +6,9 @@ const logger = require("./logger");
 const {ipcRenderer} = require("electron");
 
 window.$("input[type=password]").attr("value", 123456);
+window.$(".system-name").each((i, div) => {
+	div.innerHTML = require("./package.json").description;
+});
 
 let stuList;
 
