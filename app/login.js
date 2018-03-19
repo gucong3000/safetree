@@ -41,7 +41,7 @@ function speciallogin (userName, password) {
 				Object.assign(data, info)
 			));
 		}
-		throw new Error(userName + " 登录失败！");
+		throw Object.assign(new Error(userName + " 登录失败！"), data);
 	});
 }
 

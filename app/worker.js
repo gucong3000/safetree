@@ -12,7 +12,7 @@ window.$(".system-name").each((i, div) => {
 
 let stuList;
 
-function loop (students) {
+async function loop (students) {
 	logger.log("剩余人数：", students.length);
 	const student = students.shift();
 	if (!student) {
@@ -27,19 +27,21 @@ function loop (students) {
 		}
 	});
 
-	return student.doWorks().then(() => {
-		if (stuOpt) {
-			stuOpt.disabled = true;
-		}
-		return loop(students);
-	}).catch(ex => {
-		if (ex && ex.userid) {
+	try {
+		await student.doWorks();
+	} catch (ex) {
+		if (ex.userid < 0) {
 			// https://zhongshan.safetree.com.cn/EduAdmin/ClassManagement/StudentPassWordReset?studentid=2023012485
-			logger.error(student.name + "登陆失败，跳过。");
-			return loop(students);
+			logger.error(ex);
+			await dialogs.alert(student.name + "登陆失败，请在教师管理系统中重置该学生的密码。(请在浏览器中操作)");
+		} else {
+			throw ex;
 		}
-		throw ex;
-	});
+	}
+	if (stuOpt) {
+		stuOpt.disabled = true;
+	}
+	return loop(students);
 }
 
 const userName = localStorage.getItem("teacher_user_name") || "";
@@ -91,18 +93,16 @@ teacherLogin().then(teacherInfo => {
 	}, 1000);
 	stuList = select;
 	return teacher.getWorks();
-}).then(works => {
+}).then(async works => {
 	const unfinishedStudents = Object.keys(works);
 	if (unfinishedStudents.length) {
-		return dialogs.confirm(`发现${unfinishedStudents.length}名同学未完作业，是否开始答题？`).then(ok => {
-			if (ok) {
-				return loop(unfinishedStudents.map(student)).then(() => {
-					return dialogs.alert("所有同学的作业都做完了。");
-				});
-			}
-		});
+		const ok = await dialogs.confirm(`发现${unfinishedStudents.length}名同学未完作业，是否开始答题？`);
+		if (ok) {
+			await loop(unfinishedStudents.map(student));
+			await dialogs.alert("所有同学的作业都做完了。");
+		}
 	} else {
-		return dialogs.alert("所有同学均已完成作业。");
+		await dialogs.alert("所有同学均已完成作业。");
 	}
 }).then(() => {
 	ipcRenderer.send("worker.finish", 0);
