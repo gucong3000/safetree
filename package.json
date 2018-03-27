@@ -4,9 +4,11 @@
     "url": "https://github.com/gucong3000/safetree/issues"
   },
   "description": "学校安全教育平台全自动答题工具",
+  "dependencies": {
+    "electron": "^2.0.0-beta.5"
+  },
   "devDependencies": {
-    "electron": "^1.8.4",
-    "electron-builder": "^20.6.2",
+    "electron-builder": "^20.8.0",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.9.0",
