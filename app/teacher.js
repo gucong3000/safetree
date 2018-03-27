@@ -70,7 +70,7 @@ const teacher = {
 			logger.log("教师正在检查未完成的专题作业。");
 			return request.get("/EduAdmin/Home/Index");
 		}).then(html => {
-			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href]").toArray();
+			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href], #sidebar a:contains('安全第一课'), #sidebar a:contains('119消防专题'), #sidebar a:contains('安全教育日专题'), #sidebar a:contains('防溺水专题')").toArray();
 		}).then(links => {
 			const works = {};
 			return Promise.all(links.map(link => {
@@ -87,11 +87,10 @@ const teacher = {
 		if (teacher.works) {
 			return teacher.works;
 		}
-		teacher.works = teacher.login().then(() => {
-			return teacher.getUnfinishedWorks();
-		}).then(unfinishedWorks => {
+		teacher.works = (async () => {
+			await teacher.login();
+			const unfinishedWorks = teacher.getUnfinishedWorks();
 			const works = {};
-
 			function addWork (name, work) {
 				if (works[name]) {
 					works[name].push(work);
@@ -99,8 +98,7 @@ const teacher = {
 					works[name] = [work];
 				}
 			}
-
-			return Promise.all(Object.keys(unfinishedWorks).map(url => {
+			const specials = await Promise.all(Object.keys(unfinishedWorks).map(url => {
 				const work = unfinishedWorks[url];
 				logger.log("老师正在检查《" + work.title + "》的完成情况");
 				return teacher.getUnfinishedStudents(url).then(names => {
@@ -111,27 +109,30 @@ const teacher = {
 				});
 			})).then(
 				teacher.getSpecials
-			).then(specials => {
-				if (Object.keys(specials).length) {
-					return teacher.getHomeWorkUrls().then(urls => {
-						Object.keys(specials).forEach(id => {
-							const work = urls.specials[id];
-							if (work.expired) {
-								logger.log(`专题作业《${work.title}》已过期，跳过`);
-								return;
-							}
+			);
+			if (Object.keys(specials).length) {
+				const urls = await teacher.getHomeWorkUrls();
+				Object.keys(specials).forEach(id => {
+					let work = urls.specials[id];
+					if (!work) {
+						const title = id.replace(/专题$/, "");
+						work = Object.keys(urls.specials).map(
+							id => urls.specials[id]
+						).find(work => !work.expired && work.title.includes(title));
+					}
+					if (work.expired) {
+						logger.log(`专题作业《${work.title}》已过期，跳过`);
+						return;
+					}
 
-							specials[id].forEach(name => {
-								addWork(name, work);
-							});
-						});
+					specials[id].forEach(name => {
+						addWork(name, work);
 					});
-				}
-			}).then(() => {
-				logger.log("作业未完成情况统计：", works);
-				return works;
-			});
-		});
+				});
+			}
+			logger.log("作业未完成情况统计：", works);
+			return works;
+		})();
 
 		return teacher.works;
 	},

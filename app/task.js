@@ -134,7 +134,7 @@ function ready (callback) {
 	}
 }
 
-ready(() => {
+ready(async () => {
 	const $ = window.$;
 
 	function whaitResult () {
@@ -149,6 +149,38 @@ ready(() => {
 		[1, 2, 3].forEach(workStep => {
 			window.SpecialSign(workStep);
 		});
+	}
+
+	if (window.SPECIALID) {
+		const student = await requestData();
+		await Promise.all([
+			request.post(
+				"https://huodong.xueanquan.com/Topic/topic/main/api/v1/safetyday/survey", {
+					prvId: student.prvid,
+					cityId: student.cityid,
+					countyId: student.coutryid,
+					schoolId: student.schoolid,
+					grade: student.grade,
+					classRoom: student.classroom,
+					trueName: student.truename,
+					specialId: window.SPECIALID,
+					answer: "1A,2C,3B,4C,5B,6C,7C,8A,9A,10C,"
+				}
+			),
+			request.getJSON(
+				student.baseurl + "/Topic/topic/platformapi/api/v2/records/sign?callback=?", {
+					specialId: window.SPECIALID,
+					step: 1
+				}
+			),
+			request.post(
+				student.baseurl + "/Topic/topic/platformapi/api/v1/records/sign", {
+					specialId: window.SPECIALID,
+					step: 2
+				}
+			)
+		]);
+		callback();
 	}
 
 	if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
@@ -175,45 +207,45 @@ ready(() => {
 		// $("label:visible").filter((i, label) => (
 		// 	document.getElementById(label.htmlFor).type === "radio"
 		// )).click();
-		requestData().then(student => {
-			[
-				"在规定的地点等候校车，排队上下不拥挤",
-				"儿童安全座椅",
-				"从不在车上饮食",
-				"从不骑电动车",
-				"一直都系安全带",
-				"系好安全带",
-				"没有电动车",
-				"没有私家车",
-				student.grade <= 6 && "小学",
-				student.grade >= 7 && "中学",
-				student.grade >= 7 && student.grade <= 9 && "初中",
-				student.grade >= 10 && student.grade <= 12 && "高中",
-				"步行"
-			].filter(Boolean).forEach(label => {
-				$(`label:contains('${label}'):visible`).click();
-			});
+		const student = await requestData();
 
-			for (const q in specials) {
-				let a = specials[q];
-				if (typeof a === "function") {
-					a = a(student);
-				}
-				const dl = $(`dt:contains('${q}'):visible`).first().parent("dl");
-				if (Array.isArray(a)) {
-					a.forEach(a => {
-						dl.find(`label:contains('${a}'):visible`).click();
-					});
-				} else {
-					dl.find(`label:contains('${a}'):visible`).first().click();
-				}
-			}
-
-			setTimeout(() => {
-				$("a:contains('提交')").click();
-				whaitResult();
-			}, 1000);
+		[
+			"在规定的地点等候校车，排队上下不拥挤",
+			"儿童安全座椅",
+			"从不在车上饮食",
+			"从不骑电动车",
+			"一直都系安全带",
+			"系好安全带",
+			"没有电动车",
+			"没有私家车",
+			student.grade <= 6 && "小学",
+			student.grade >= 7 && "中学",
+			student.grade >= 7 && student.grade <= 9 && "初中",
+			student.grade >= 10 && student.grade <= 12 && "高中",
+			"步行"
+		].filter(Boolean).forEach(label => {
+			$(`label:contains('${label}'):visible`).click();
 		});
+
+		for (const q in specials) {
+			let a = specials[q];
+			if (typeof a === "function") {
+				a = a(student);
+			}
+			const dl = $(`dt:contains('${q}'):visible`).first().parent("dl");
+			if (Array.isArray(a)) {
+				a.forEach(a => {
+					dl.find(`label:contains('${a}'):visible`).click();
+				});
+			} else {
+				dl.find(`label:contains('${a}'):visible`).first().click();
+			}
+		}
+
+		setTimeout(() => {
+			$("a:contains('提交')").click();
+			whaitResult();
+		}, 1000);
 	} else {
 		const timer1 = setInterval(() => {
 			$("a:contains('马上去'), a:contains('请签'), a:contains('请点')").filter(":visible").first().click();
@@ -225,7 +257,7 @@ ready(() => {
 				"_three$1": /_two(\.\w+)$/
 			};
 
-			let newUrl = $(".container a:contains('二')").prop("href");
+			let newUrl = $(".nav a:contains('二'), .nav a:contains('家庭版')").prop("href");
 
 			if (!newUrl) {
 				Object.keys(urls).some(key => {
