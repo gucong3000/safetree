@@ -1,52 +1,65 @@
 "use strict";
 const request = require("./request");
+const url = require("url");
 
-module.exports = function (userName, password) {
+async function login (userName, password) {
 	if (!userName) {
 		throw new Error("用户名不得为空");
 	}
 	password = password || "123456";
-	return speciallogin(userName, password).then(info => {
-		if (info.baseurl.includes(location.host)) {
-			if (location.pathname === "/MainPage.html") {
-				window.$(".header-top .header-left~*:contains('欢迎')").html("欢迎您，" + info.truename);
-			} else {
-				const url = "/MainPage.html";
-				return request.get(url).then(html => {
-					const style = document.querySelector("head style:last-of-type");
-					history.pushState(info, "安全教育平台", url);
-					document.write(html.replace(/\s*<script\b.*?>[\s\S]*?<\/script>/ig, ""));
-					if (style) {
-						document.documentElement.firstChild.appendChild(style);
-					}
-				}).catch(() => {}).then(() => {
-					return info;
-				});
-			}
-		} else {
-			location.href = info.baseurl + "/MainPage.html#" + userName;
+	const info = await speciallogin(userName, password);
+	if (info.baseurl.includes(location.host)) {
+		if (location.pathname !== "/MainPage.html") {
+			const style = document.querySelector("head style:last-of-type");
+			const loc = "/MainPage.html";
+			const html = await request.get(loc);
+			history.pushState(info, "安全教育平台", loc);
+			document.write(html);
+			document.documentElement.firstChild.appendChild(style);
 		}
-		return info;
-	});
+		window.$(".header-top .header-left~*:contains('欢迎')").html("欢迎您，" + info.truename);
+	} else {
+		location.href = url.resolve(info.baseurl, "/MainPage.html#" + userName);
+	}
+	return info;
 };
 
-function speciallogin (userName, password) {
-	return request.getJSON(location.host.replace(/^\w+/, "//speciallogin") + "/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
+async function speciallogin (userName, password) {
+	const result = {};
+	const data = await request.getJSON(location.host.replace(/^\w+/, "//speciallogin") + "/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
 		account: userName,
 		password,
 		r: Math.random()
-	}).then(data => {
-		if (+data.userid >= 0) {
-			return getUserInfo().then(info => (
-				Object.assign(data, info)
-			));
-		}
-		throw Object.assign(new Error(userName + " 登录失败！"), data);
 	});
+	if (+data.userid >= 0) {
+		Object.assign(result, data);
+	}
+
+	const info = await getUserInfo();
+
+	if (info.username === userName) {
+		Object.assign(result, info);
+	}
+
+	if (+result.userid >= 0) {
+		return result;
+	}
+
+	throw Object.assign(new Error(userName + " 登录失败！"), data);
 }
 
-function getUserInfo () {
-	return request.getJSON("/Education/Special.asmx/GetUserInfo?jsoncallback=?", {
+const apiGetUserInfo = "/Education/Special.asmx/GetUserInfo?jsoncallback=?";
+
+async function getUserInfo (apiUrl) {
+	const result = await request.getJSON(apiUrl || apiGetUserInfo, {
 		r: Math.random()
 	});
+	if (+result.userid > 0) {
+		return result;
+	}
+	if (!apiUrl) {
+		return getUserInfo(url.resolve(result.baseurl, apiGetUserInfo));
+	}
 }
+
+module.exports = login;

@@ -44,32 +44,33 @@ async function loop (students) {
 	return loop(students);
 }
 
-const userName = localStorage.getItem("teacher_user_name") || "";
+const defaultUserName = localStorage.getItem("teacher_user_name");
 
-function teacherLogin () {
-	if (location.pathname === "/MainPage.html" && location.hash) {
-		const currUserName = location.hash.slice(1);
-		location.hash = "";
-
-		return teacher.login(currUserName).catch(() => {
-			location.href = location.pathname;
-		});
+async function teacherLogin (tryName) {
+	let userName;
+	if (tryName && location.pathname === "/MainPage.html" && location.hash.length > 1) {
+		userName = location.hash.slice(1);
+	} else {
+		userName = await dialogs.prompt("请输入教师用户名", defaultUserName);
 	}
-
-	return dialogs.prompt("请输入教师用户名", userName).then(teacher.login).catch(() => {
-		location.reload();
-	});
+	let teacherInfo;
+	try {
+		teacherInfo = await teacher.login(userName);
+	} catch (error) {
+		if (process.env.CI_TEACHER_ACCOUNT || !("userid" in error)) {
+			throw error;
+		}
+		await dialogs.alert(error.message);
+		return teacherLogin();
+	}
+	return worker(teacherInfo);
 }
 
-teacherLogin().then(teacherInfo => {
-	if (teacherInfo && teacherInfo.truename) {
-		logger.log(`教师 ${teacherInfo.truename}(${teacherInfo.username}) 成功登陆 ${teacherInfo.baseurl}`);
-		return teacher.getStudents();
-	} else {
-		logger.error(teacherInfo);
-		throw teacherInfo;
-	}
-}).then(students => {
+async function worker (teacherInfo) {
+	location.hash = "";
+
+	logger.log(`教师 ${teacherInfo.truename}(${teacherInfo.username}) 成功登陆 ${teacherInfo.baseurl}`);
+	const students = await teacher.getStudents();
 	logger.log("学生账号清单", students, Object.keys(students).length);
 	const select = document.createElement("select");
 	Object.keys(students).forEach((name, i) => {
@@ -92,8 +93,7 @@ teacherLogin().then(teacherInfo => {
 		window.$(".wechat-box").hide();
 	}, 1000);
 	stuList = select;
-	return teacher.getWorks();
-}).then(async works => {
+	const works = await teacher.getWorks();
 	const unfinishedStudents = Object.keys(works);
 	if (unfinishedStudents.length) {
 		const ok = await dialogs.confirm(`发现${unfinishedStudents.length}名同学未完作业，是否开始答题？`);
@@ -104,7 +104,9 @@ teacherLogin().then(teacherInfo => {
 	} else {
 		await dialogs.alert("所有同学均已完成作业。");
 	}
-}).then(() => {
+}
+
+teacherLogin(true).then(() => {
 	ipcRenderer.send("worker.finish", 0);
 }, error => {
 	logger.error(error);
