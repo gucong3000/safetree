@@ -89,7 +89,7 @@ const teacher = {
 		}
 		teacher.works = (async () => {
 			await teacher.login();
-			const unfinishedWorks = teacher.getUnfinishedWorks();
+			const unfinishedWorks = await teacher.getUnfinishedWorks();
 			const works = {};
 			function addWork (name, work) {
 				if (works[name]) {
@@ -98,38 +98,36 @@ const teacher = {
 					works[name] = [work];
 				}
 			}
-			const specials = await Promise.all(Object.keys(unfinishedWorks).map(url => {
+
+			await Promise.all(Object.keys(unfinishedWorks).map(async url => {
 				const work = unfinishedWorks[url];
 				logger.log("老师正在检查《" + work.title + "》的完成情况");
-				return teacher.getUnfinishedStudents(url).then(names => {
-					return teacher.getHomeWorkUrls().then(urls => {
-						work.url = urls[work.id];
-						names.forEach(name => addWork(name, work));
-					});
-				});
-			})).then(
-				teacher.getSpecials
-			);
-			if (Object.keys(specials).length) {
+				const names = await teacher.getUnfinishedStudents(url);
 				const urls = await teacher.getHomeWorkUrls();
-				Object.keys(specials).forEach(id => {
-					let work = urls.specials[id];
-					if (!work) {
-						const title = id.replace(/专题$/, "");
-						work = Object.keys(urls.specials).map(
-							id => urls.specials[id]
-						).find(work => !work.expired && work.title.includes(title));
-					}
-					if (work.expired) {
-						logger.log(`专题作业《${work.title}》已过期，跳过`);
-						return;
-					}
+				work.url = urls[work.id];
+				names.forEach(name => addWork(name, work));
+			}));
 
-					specials[id].forEach(name => {
-						addWork(name, work);
-					});
+			const specials = await teacher.getSpecials();
+
+			await Promise.all(Object.keys(specials).map(async id => {
+				const urls = await teacher.getHomeWorkUrls();
+				let work = urls.specials[id];
+				if (!work) {
+					const title = id.replace(/专题$/, "");
+					work = Object.keys(urls.specials).map(
+						id => urls.specials[id]
+					).find(work => !work.expired && work.title.includes(title));
+				}
+				if (work.expired) {
+					logger.log(`专题作业《${work.title}》已过期，跳过`);
+					return;
+				}
+
+				specials[id].forEach(name => {
+					addWork(name, work);
 				});
-			}
+			}));
 			logger.log("作业未完成情况统计：", works);
 			return works;
 		})();
