@@ -46,7 +46,7 @@ const teacher = {
 					const checkUrl = links[links.length - 1].getAttribute("href");
 					works[checkUrl] = {
 						title,
-						id
+						id,
 					};
 				}
 			});
@@ -66,20 +66,19 @@ const teacher = {
 		if (teacher.specials) {
 			return teacher.specials;
 		}
-		teacher.specials = teacher.login().then(() => {
+		teacher.specials = teacher.login().then(async () => {
 			logger.log("教师正在检查未完成的专题作业。");
-			return request.get("/EduAdmin/Home/Index");
-		}).then(html => {
-			return $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href], #sidebar a:contains('安全第一课'), #sidebar a:contains('119消防专题'), #sidebar a:contains('安全教育日专题'), #sidebar a:contains('防溺水专题')").toArray();
-		}).then(links => {
+			const html = await request.get("/EduAdmin/Home/Index");
+			const links = $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href], #sidebar a:contains('安全第一课'), #sidebar a:contains('119消防专题'), #sidebar a:contains('安全教育日专题'), #sidebar a:contains('防溺水专题')").toArray();
 			const works = {};
-			return Promise.all(links.map(link => {
+			await Promise.all(links.map(link => {
 				return teacher.getSpecial(link.getAttribute("href")).then(names => {
 					if (names.length) {
 						works[link.innerText.trim().replace(/^第(\d+).+?$/, "$1")] = names;
 					}
 				});
-			})).then(() => works);
+			}));
+			return works;
 		});
 		return teacher.specials;
 	},
@@ -119,14 +118,16 @@ const teacher = {
 						id => urls.specials[id]
 					).find(work => !work.expired && work.title.includes(title));
 				}
-				if (work.expired) {
-					logger.log(`专题作业《${work.title}》已过期，跳过`);
-					return;
-				}
+				if (work) {
+					if (work.expired) {
+						logger.log(`专题作业《${work.title}》已过期，跳过`);
+						return;
+					}
 
-				specials[id].forEach(name => {
-					addWork(name, work);
-				});
+					specials[id].forEach(name => {
+						addWork(name, work);
+					});
+				}
 			}));
 			logger.log("作业未完成情况统计：", works);
 			return works;
@@ -165,7 +166,7 @@ const teacher = {
 			});
 		});
 		return teacher.students;
-	}
+	},
 };
 
 module.exports = teacher;

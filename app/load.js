@@ -1,9 +1,14 @@
 "use strict";
 const {
-	remote
+	remote,
 } = require("electron");
 
 module.exports = function (src, data) {
+	src = {
+		"https://zhuanti.xueanquan.com/special/drowning2018/index.html": "https://zhuanti.xueanquan.com/special/drowning2018/drowning2018_family.html",
+		"https://zhuanti.xueanquan.com/special/nationeducation2018/index.html": "https://zhuanti.xueanquan.com/special/nationeducation2018/nationeducation_family.html",
+	}[src] || src;
+
 	const isDevToolsOpened = remote.getCurrentWebContents().isDevToolsOpened();
 	return new Promise((resolve, reject) => {
 		const webview = document.createElement("webview");
@@ -68,10 +73,16 @@ module.exports = function (src, data) {
 		function kill (data) {
 			wrap.style.left = "-500%";
 			setTimeout(() => {
-				webview.delete();
-				document.body.removeChild(wrap);
+				try {
+					webview.delete();
+				} catch (ex) {
+					//
+				}
+				if (wrap.parentNode) {
+					wrap.parentNode.removeChild(wrap);
+				}
 				resolve(data);
-			}, 200);
+			}, 800);
 		}
 	});
 };

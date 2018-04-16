@@ -20,7 +20,7 @@ before_install:
 
 script:
   - npm test
-  - split -l 5 account.txt
+  - split -l 6 account.txt
   - cp -f "$ACCOUNT_SPLIT" account.txt
   - chmod +x run.sh
   - ./run.sh

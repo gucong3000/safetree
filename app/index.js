@@ -3,7 +3,7 @@ const electron = require("electron");
 const {
 	BrowserWindow,
 	ipcMain,
-	app
+	app,
 } = electron;
 
 let mainWindow = null;
@@ -30,9 +30,9 @@ function initialize () {
 			title: app.getName(),
 			webPreferences: {
 				webSecurity: false,
-				images: !process.env.CI
+				images: !process.env.CI,
 			},
-			show: !process.env.CI
+			show: !process.env.CI,
 		};
 
 		mainWindow = new BrowserWindow(windowOptions);

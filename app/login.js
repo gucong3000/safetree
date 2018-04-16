@@ -15,7 +15,9 @@ async function login (userName, password) {
 			const html = await request.get(loc);
 			history.pushState(info, "安全教育平台", loc);
 			document.write(html);
-			document.documentElement.firstChild.appendChild(style);
+			if (style) {
+				document.documentElement.firstChild.appendChild(style);
+			}
 		}
 		window.$(".header-top .header-left~*:contains('欢迎')").html("欢迎您，" + info.truename);
 	} else {
@@ -29,7 +31,7 @@ async function speciallogin (userName, password) {
 	const data = await request.getJSON(location.host.replace(/^\w+/, "//speciallogin") + "/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
 		account: userName,
 		password,
-		r: Math.random()
+		r: Math.random(),
 	});
 	if (+data.userid >= 0) {
 		Object.assign(result, data);
@@ -52,7 +54,7 @@ const apiGetUserInfo = "/Education/Special.asmx/GetUserInfo?jsoncallback=?";
 
 async function getUserInfo (apiUrl) {
 	const result = await request.getJSON(apiUrl || apiGetUserInfo, {
-		r: Math.random()
+		r: Math.random(),
 	});
 	if (+result.userid > 0) {
 		return result;

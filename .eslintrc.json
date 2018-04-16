@@ -14,27 +14,9 @@
 	],
 	"root": true,
 	"rules": {
-		"arrow-spacing": [
+		"comma-dangle": [
 			"error",
-			{
-				"after": true,
-				"before": true
-			}
-		],
-		"comma-spacing": [
-			"error",
-			{
-				"after": true,
-				"before": false
-			}
-		],
-		"eol-last": [
-			"error",
-			"always"
-		],
-		"eqeqeq": [
-			"error",
-			"smart"
+			"always-multiline"
 		],
 		"no-tabs": [
 			"off"
@@ -44,13 +26,6 @@
 			"tab",
 			{
 				"SwitchCase": 1
-			}
-		],
-		"keyword-spacing": [
-			"error",
-			{
-				"after": true,
-				"before": true
 			}
 		],
 		"no-console": [

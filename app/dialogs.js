@@ -31,12 +31,12 @@ if (process.env.CI_TEACHER_ACCOUNT) {
 			console.log.apply(console, args);
 			ipcRenderer.send("dialogs.alert", args);
 			return Promise.resolve(true);
-		}
+		},
 	};
 } else {
 	dialogs = thenify(require("dialogs")({
 		ok: "确定",
-		cancel: "取消"
+		cancel: "取消",
 	}));
 }
 module.exports = dialogs;

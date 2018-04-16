@@ -23,4 +23,4 @@ safetree
 
 ## 已知问题
 
- - `专题作业`无法全自动完成，如有需要请[联系作者](https://github.com/gucong3000/safetree/issues)并提供你的账号和作业网址以便改进。
+ - `专题作业`无法全自动完成，如有需要请[联系作者](https://github.com/gucong3000/safetree/issues)并提供你的**账号**和**作业网址**以便改进。

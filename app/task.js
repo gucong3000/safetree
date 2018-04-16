@@ -1,9 +1,17 @@
 "use strict";
 const dialogs = require("./dialogs");
 const request = require("./request");
+
 if (!window.$) {
 	window.$ = require("jquery");
 }
+
+function sleep (timeout) {
+	return new Promise((resolve) => {
+		setTimeout(resolve, timeout);
+	});
+}
+
 function getRandomItemOfArray (arr) {
 	return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -62,7 +70,23 @@ const specials = {
 	"放学路上，小明准备过马路时红灯亮了，这时他应该": "不管有无车辆，都等交通灯变为绿灯时再通过",
 	"在没有施划人行横道的公路上，乘车人从公共汽车下车后横过公路时，您认为下列做法正确的是": "车开走且确认安全后再通过",
 	"亮亮要去马路对面的超市买东西，可是路口没有红绿灯也没有斑马线，这时你认为他怎么做才是最安全的": "在路口左看右看，反复确认安全后快速通过",
-	"乘坐大巴车时，如果遇到事故被困车内，我们可以利用哪些方法逃出车外": "以上都可以"
+	"乘坐大巴车时，如果遇到事故被困车内，我们可以利用哪些方法逃出车外": "以上都可以",
+	"回执签字": "已经",
+	"有没有": "有",
+	"学校有开设游泳课吗": "没有",
+	"禁止自己的孩子去池塘": "有",
+	"反间谍工作": "国家安全",
+	"举报间谍": "12339",
+	"哪些信息属于个人信息": "以上都是",
+	"不良信息": "关闭",
+	"安全教育日为每年的什么时候": "4月15日",
+	"需要我们协助时": "配合",
+	"文明上网的行为": "上网查阅学习资料",
+	"可以随便从互联网上下载": "指导下下载",
+	"《国家安全法》出台时间为": "2015年7月1日",
+	"哪种方式设置的密码相对安全": "综合性",
+	"属于网络欺凌的是": "以上都是",
+	"总体国家安全观以什么为根本": "政治安全",
 };
 
 window.open = url => {
@@ -70,7 +94,7 @@ window.open = url => {
 };
 
 window.alert = msg => {
-	if (/已/.test(msg)) {
+	if (/(已|重复)/.test(msg)) {
 		callback();
 	} else {
 		dialogs.alert(msg);
@@ -100,7 +124,7 @@ function getHomeWorkUrls () {
 	let links = document.querySelectorAll("table tr a[name^=workToUrl]");
 	if (links && links.length) {
 		const urls = {
-			specials: {}
+			specials: {},
 		};
 		links = Array.from(links).map(a => {
 			// eslint-disable-next-line no-eval
@@ -111,7 +135,7 @@ function getHomeWorkUrls () {
 				urls.specials[id] = {
 					expired: /不记录数据/.test(a.parentNode.parentNode.children[4].innerText),
 					title: title,
-					url: args[5]
+					url: args[5],
 				};
 			} else {
 				urls[String(args[0])] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${args[3]}&li=${args[0]}`;
@@ -137,12 +161,14 @@ function ready (callback) {
 ready(async () => {
 	const $ = window.$;
 
-	function whaitResult () {
-		if ($("#yes:visible,#resultScore:visible").length) {
-			callback();
-		} else {
-			setTimeout(whaitResult, 200);
+	async function whaitResult (i) {
+		i = i || 0;
+		await sleep(200);
+		if ($("#yes:visible,#resultScore:visible,#questionsuccess:visible").length || i > 30) {
+			return;
 		}
+		++i;
+		return whaitResult(i);
 	}
 
 	if (window.SpecialSign) {
@@ -151,7 +177,11 @@ ready(async () => {
 		});
 	}
 
-	if (window.SPECIALID) {
+	if (window.gotest && window.tijiao) {
+		window.tijiao(0);
+		await sleep(800);
+		window.gotest();
+	} else if (window.SPECIALID) {
 		const student = await requestData();
 		await Promise.all([
 			request.post(
@@ -164,36 +194,34 @@ ready(async () => {
 					classRoom: student.classroom,
 					trueName: student.truename,
 					specialId: window.SPECIALID,
-					answer: "1A,2C,3B,4C,5B,6C,7C,8A,9A,10C,"
+					answer: "1A,2C,3B,4C,5B,6C,7C,8A,9A,10C,",
 				}
 			),
 			request.getJSON(
 				student.baseurl + "/Topic/topic/platformapi/api/v2/records/sign?callback=?", {
 					specialId: window.SPECIALID,
-					step: 1
+					step: 1,
 				}
 			),
 			request.post(
 				student.baseurl + "/Topic/topic/platformapi/api/v1/records/sign", {
 					specialId: window.SPECIALID,
-					step: 2
+					step: 2,
 				}
-			)
+			),
 		]);
 		callback();
-	}
-
-	if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
+	} else if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
 		getHomeWorkUrls();
 	} else if (window.ShowTestPaper) {
-		window.getAnswers = function (answers) {
-			setTimeout(function () {
-				$(".bto_testbox input[type=radio]").prop("checked", function (i) {
-					return !!+answers.Rows[i].istrue;
-				});
-				$(".bto_testbox .btn_submit").click();
-				whaitResult();
-			}, 600);
+		window.getAnswers = async function (answers) {
+			await sleep(600);
+			$(".bto_testbox input[type=radio]").prop("checked", function (i) {
+				return !!+answers.Rows[i].istrue;
+			});
+			$(".bto_testbox .btn_submit").click();
+			await whaitResult(0);
+			callback();
 		};
 
 		// eslint-disable-next-line no-eval
@@ -207,6 +235,7 @@ ready(async () => {
 		// $("label:visible").filter((i, label) => (
 		// 	document.getElementById(label.htmlFor).type === "radio"
 		// )).click();
+		await sleep(800);
 		const student = await requestData();
 
 		[
@@ -218,11 +247,17 @@ ready(async () => {
 			"系好安全带",
 			"没有电动车",
 			"没有私家车",
+			"会，已经熟练掌握",
+			"正规的游泳馆",
+			"没有开设游泳课",
+			"非常好",
+			"步行",
+			"在国家安全局向你了解情况时积极配合",
+			"及时提醒并制止",
 			student.grade <= 6 && "小学",
 			student.grade >= 7 && "中学",
 			student.grade >= 7 && student.grade <= 9 && "初中",
 			student.grade >= 10 && student.grade <= 12 && "高中",
-			"步行"
 		].filter(Boolean).forEach(label => {
 			$(`label:contains('${label}'):visible`).click();
 		});
@@ -232,41 +267,39 @@ ready(async () => {
 			if (typeof a === "function") {
 				a = a(student);
 			}
-			const dl = $(`dt:contains('${q}'):visible`).first().parent("dl");
-			if (Array.isArray(a)) {
-				a.forEach(a => {
-					dl.find(`label:contains('${a}'):visible`).click();
-				});
-			} else {
-				dl.find(`label:contains('${a}'):visible`).first().click();
-			}
+			Array.from($(`dt:contains('${q}'):visible`).parent("dl")).forEach(dl => {
+				if (Array.isArray(a)) {
+					a.forEach(a => {
+						$(dl).find(`label:contains('${a}'):visible`).click();
+					});
+				} else {
+					$(dl).find(`label:contains('${a}'):visible`).first().click();
+				}
+			});
 		}
 
-		setTimeout(() => {
-			$("a:contains('提交')").click();
-			whaitResult();
-		}, 1000);
+		await sleep(1000);
+
+		$("a:contains('提交'), #tijiao").click();
+		await whaitResult(0);
+		callback();
 	} else {
 		const timer1 = setInterval(() => {
 			$("a:contains('马上去'), a:contains('请签'), a:contains('请点')").filter(":visible").first().click();
 		}, 200);
 		const timer2 = setTimeout(() => {
 			const urls = {
+				"_family.html": /_school.html$/,
 				"_two$1": /_one(\.\w+)$/,
 				"2$1": /(?:_vr|\d+)(\.\w+)$/,
-				"_three$1": /_two(\.\w+)$/
+				"_three$1": /_two(\.\w+)$/,
 			};
 
 			let newUrl = $(".nav a:contains('二'), .nav a:contains('家庭版')").prop("href");
 
 			if (!newUrl) {
-				Object.keys(urls).some(key => {
-					const reg = urls[key];
-					if (reg.test(location.pathname)) {
-						newUrl = location.pathname.replace(reg, key);
-						return true;
-					}
-				});
+				const rule = Object.keys(urls).find(key => urls[key].test(location.pathname));
+				newUrl = rule && location.pathname.replace(urls[rule], rule);
 			}
 			if (newUrl) {
 				request.get(newUrl).then(() => {

@@ -38,7 +38,7 @@ module.exports = function (name) {
 			return load(work.url, data).catch(ex => {
 				logger.error(name, "未能完成作业", work.title, "请稍后重试", ex);
 			});
-		}
+		},
 	};
 	return student;
 };
