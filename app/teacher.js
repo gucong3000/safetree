@@ -149,7 +149,9 @@ const teacher = {
 					$(tr.children).each((i, td) => {
 						const value = td.innerText.trim();
 						if (value) {
-							if (!id && /^\d+$/.test(value)) {
+							if (value.includes("重置密码")) {
+								id = td.children[0].href.replace(/^.+?studentid=/i, "");
+							} else if (!id && /^\d+$/.test(value)) {
 								id = value;
 							} else if (!account && /^\w+$/.test(value)) {
 								account = value;
@@ -159,7 +161,10 @@ const teacher = {
 						}
 					});
 					if (account && name) {
-						students[name] = account;
+						students[name] = {
+							id,
+							account,
+						};
 					}
 				});
 				return students;

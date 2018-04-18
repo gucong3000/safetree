@@ -103,7 +103,7 @@ function initialize () {
 
 		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL(`https://${city}.xueanquan.com/MainPage.html`);
+		mainWindow.loadURL(`https://${city}.xueanquan.com/`);
 	}
 
 	app.on("ready", function () {

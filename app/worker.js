@@ -5,6 +5,11 @@ const dialogs = require("./dialogs");
 const logger = require("./logger");
 const {ipcRenderer} = require("electron");
 
+if (!location.hostname) {
+	ipcRenderer.send("worker.finish", 1);
+	return;
+}
+
 window.$("input[type=password]").attr("value", 123456);
 window.$(".system-name").each((i, div) => {
 	div.innerHTML = require("./package.json").description;
@@ -31,9 +36,16 @@ async function loop (students) {
 		await student.doWorks();
 	} catch (ex) {
 		if (ex.userid < 0) {
-			// https://zhongshan.safetree.com.cn/EduAdmin/ClassManagement/StudentPassWordReset?studentid=2023012485
 			logger.error(ex);
-			await dialogs.alert(student.name + "登陆失败，请在教师管理系统中重置该学生的密码。(请在浏览器中操作)");
+			if (await dialogs.confirm(student.name + "登陆失败，是否重置其密码？")) {
+				const result = await student.reset();
+				if (result.message) {
+					await dialogs.alert(result.message);
+				}
+				if (result.statusCode >= 200 && result.statusCode < 300) {
+					await student.doWorks();
+				}
+			}
 		} else {
 			throw ex;
 		}
