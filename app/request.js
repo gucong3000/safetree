@@ -5,8 +5,8 @@
 			numPerPage: 999,
 			pagesize: 999,
 		}, data);
-		return new Promise((resolve, reject) => {
-			window.$[fnName](url, data).then(resolve, reject);
-		});
+		return Promise.resolve(
+			window.$[fnName](url, data)
+		);
 	};
 });

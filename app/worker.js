@@ -14,6 +14,7 @@ window.$("input[type=password]").attr("value", 123456);
 window.$(".system-name").each((i, div) => {
 	div.innerHTML = require("./package.json").description;
 });
+window.$(".wechat-box").remove();
 
 let stuList;
 

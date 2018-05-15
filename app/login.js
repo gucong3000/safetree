@@ -39,7 +39,7 @@ async function speciallogin (userName, password) {
 
 	const info = await getUserInfo();
 
-	if (info.username === userName) {
+	if (info && info.username === userName) {
 		Object.assign(result, info);
 	}
 
