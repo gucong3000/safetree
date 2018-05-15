@@ -5,7 +5,7 @@ do
 	export "CI_TEACHER_ACCOUNT=$line"
 	echo -e "$CI_TEACHER_ACCOUNT" | base64 -d
 	echo
-	for VARIABLE in {1..9}
+	for VARIABLE in {1..6}
 	do
 		echo -e "第${VARIABLE}次尝试"
 		if [ "${CI-}" ]; then
