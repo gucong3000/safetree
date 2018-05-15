@@ -1,6 +1,7 @@
 "use strict";
 const dialogs = require("./dialogs");
 const request = require("./request");
+const path = require("path");
 
 if (!window.$) {
 	window.$ = require("jquery");
@@ -87,7 +88,15 @@ const specials = {
 	"哪种方式设置的密码相对安全": "综合性",
 	"属于网络欺凌的是": "以上都是",
 	"总体国家安全观以什么为根本": "政治安全",
+	"拥有属于自己的手机或电脑吗": "没有",
+	"平时上网吗": "从不",
 };
+
+try {
+	Object.assign(specials, require(path.join(process.cwd(), "specials")));
+} catch (ex) {
+	console.error(ex);
+}
 
 window.open = url => {
 	location.href = url;
@@ -127,10 +136,11 @@ function getHomeWorkUrls () {
 			specials: {},
 		};
 		links = Array.from(links).map(a => {
+			const title = a.parentNode.parentNode.children[1].innerText.trim().replace(/^第(\d+)期[：:]\s*/, "");
+
 			// eslint-disable-next-line no-eval
 			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
 			if (args[5]) {
-				const title = a.parentNode.parentNode.children[1].innerText.trim().replace(/^第(\d+)期[：:]\s*/, "");
 				const id = RegExp.$1;
 				urls.specials[id] = {
 					expired: /不记录数据/.test(a.parentNode.parentNode.children[4].innerText),
@@ -138,7 +148,7 @@ function getHomeWorkUrls () {
 					url: args[5],
 				};
 			} else {
-				urls[String(args[0])] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${args[3]}&li=${args[0]}`;
+				urls[String(args[0])] = urls[title] = `/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${args[3]}&li=${args[0]}`;
 			}
 		});
 		callback(urls);
@@ -159,6 +169,11 @@ function ready (callback) {
 }
 
 ready(async () => {
+	if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
+		getHomeWorkUrls();
+		return;
+	}
+
 	const $ = window.$;
 
 	async function whaitResult (i) {
@@ -171,6 +186,28 @@ ready(async () => {
 		return whaitResult(i);
 	}
 
+	if (window.ShowTestPaper) {
+		// 常规作业
+		window.getAnswers = async function (answers) {
+			await sleep(600);
+			$(".bto_testbox input[type=radio]").prop("checked", function (i) {
+				return !!+answers.Rows[i].istrue;
+			});
+			$(".bto_testbox .btn_submit").click();
+			await whaitResult(0);
+			callback();
+		};
+
+		// eslint-disable-next-line no-eval
+		window.eval(window.ShowTestPaper.toString().replace(/TestPaperThreelistGet2.*?\n?.*?if\s+\(.*?\b(\w+)\.Rows\.length.*?\)\s*\{/, function (s, dataVarName) {
+			return s + "getAnswers(" + dataVarName + ");";
+		}));
+		window.ShowTestPaper();
+		return;
+	}
+
+	const student = await requestData();
+
 	if (window.SpecialSign) {
 		[1, 2, 3].forEach(workStep => {
 			window.SpecialSign(workStep);
@@ -182,7 +219,6 @@ ready(async () => {
 		await sleep(800);
 		window.gotest();
 	} else if (window.SPECIALID) {
-		const student = await requestData();
 		await Promise.all([
 			request.post(
 				"https://huodong.xueanquan.com/Topic/topic/main/api/v1/safetyday/survey", {
@@ -211,24 +247,6 @@ ready(async () => {
 			),
 		]);
 		callback();
-	} else if (location.pathname === "/JiaTing/JtMyHomeWork.html") {
-		getHomeWorkUrls();
-	} else if (window.ShowTestPaper) {
-		window.getAnswers = async function (answers) {
-			await sleep(600);
-			$(".bto_testbox input[type=radio]").prop("checked", function (i) {
-				return !!+answers.Rows[i].istrue;
-			});
-			$(".bto_testbox .btn_submit").click();
-			await whaitResult(0);
-			callback();
-		};
-
-		// eslint-disable-next-line no-eval
-		window.eval(window.ShowTestPaper.toString().replace(/TestPaperThreelistGet2.*?\n?.*?if\s+\(.*?\b(\w+)\.Rows\.length.*?\)\s*\{/, function (s, dataVarName) {
-			return s + "getAnswers(" + dataVarName + ");";
-		}));
-		window.ShowTestPaper();
 	} else if (window.loadQuestion) {
 		window.loadQuestion(0, 99, 1, false);
 		window.questionMust = () => true;
@@ -267,7 +285,7 @@ ready(async () => {
 			if (typeof a === "function") {
 				a = a(student);
 			}
-			Array.from($(`dt:contains('${q}'):visible`).parent("dl")).forEach(dl => {
+			$(`dt:contains('${q}'):visible`).toArray().forEach(dl => {
 				if (Array.isArray(a)) {
 					a.forEach(a => {
 						$(dl).find(`label:contains('${a}'):visible`).click();
@@ -277,8 +295,11 @@ ready(async () => {
 				}
 			});
 		}
+		document.addEventListener("click", () => {
+			console.log(showRst());
+		});
 
-		await sleep(1000);
+		await sleep(800);
 
 		$("a:contains('提交'), #tijiao").click();
 		await whaitResult(0);
@@ -316,4 +337,20 @@ ready(async () => {
 
 if (process.env.CI_TEACHER_ACCOUNT) {
 	setTimeout(callback, 90000);
+}
+
+function showRst () {
+	const rst = {};
+	Array.from(document.querySelectorAll("dt")).forEach(dt => {
+		let q = dt.childNodes;
+		q = q[q.length - 1].wholeText.trim().replace(/\s*？$/, "");
+		const a = Array.from(dt.parentNode.querySelectorAll("dd input"))
+			.filter(input => input.checked)
+			.map(input => input.parentNode.querySelector("label").innerText.trim().replace(/^[A-Z]、?/, ""));
+
+		if (a.length) {
+			rst[q] = a.length > 1 ? a : a[0];
+		}
+	});
+	return JSON.stringify(rst, 0, "\t");
 }

@@ -30,6 +30,8 @@ module.exports = function (src, data) {
 			kill();
 			reject(ex);
 		});
+		webview.useragent = navigator.userAgent.replace(/\s+(Electron|safetree)\b\S+/g, "");
+
 		webview.src = src;
 		webview.nodeintegration = true;
 		webview.disablewebsecurity = true;

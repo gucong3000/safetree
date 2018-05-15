@@ -53,33 +53,38 @@ const teacher = {
 			return works;
 		});
 	},
-	getSpecial: function (url) {
-		return request.post(url).then(html => {
-			return $(html).find("tr").filter((i, tr) => {
-				return tr.children[2] && tr.children[2].innerText.trim() === "未完成";
-			}).map((i, tr) => {
-				return tr.children[1].innerText.trim();
-			}).toArray();
-		});
+	getSpecial: async function (url) {
+		return $(await request.post(url)).find("tr").toArray()
+			.filter(
+				tr => Array.from(tr.children).some(
+					td => td.innerText.trim() === "未完成"
+				)
+			).map(
+				tr => tr.children[1].innerText.trim()
+			);
 	},
 	getSpecials: function () {
 		if (teacher.specials) {
 			return teacher.specials;
 		}
+
 		teacher.specials = teacher.login().then(async () => {
 			logger.log("教师正在检查未完成的专题作业。");
 			const html = await request.get("/EduAdmin/Home/Index");
 			const links = $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href], #sidebar a:contains('安全第一课'), #sidebar a:contains('119消防专题'), #sidebar a:contains('安全教育日专题'), #sidebar a:contains('防溺水专题')").toArray();
 			const works = {};
 			await Promise.all(links.map(link => {
-				return teacher.getSpecial(link.getAttribute("href")).then(names => {
+				const title = (link.title || link.innerText).trim().replace(/^第(\d+).+?$/, "$1");
+				return teacher.getSpecial(link.getAttribute("href"), title).then(names => {
 					if (names.length) {
-						works[link.innerText.trim().replace(/^第(\d+).+?$/, "$1")] = names;
+						works[title] = names;
 					}
 				});
 			}));
+
 			return works;
 		});
+
 		return teacher.specials;
 	},
 	getWorks: function () {

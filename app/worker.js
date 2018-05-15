@@ -14,7 +14,7 @@ window.$("input[type=password]").attr("value", 123456);
 window.$(".system-name").each((i, div) => {
 	div.innerHTML = require("./package.json").description;
 });
-window.$(".wechat-box").remove();
+window.$(".wechat-box").hide();
 
 let stuList;
 
@@ -103,7 +103,6 @@ async function worker (teacherInfo) {
 	// select.disabled = true;
 	setTimeout(() => {
 		document.documentElement.lastChild.appendChild(select);
-		window.$(".wechat-box").hide();
 	}, 1000);
 	stuList = select;
 	const works = await teacher.getWorks();

@@ -18,9 +18,9 @@ safetree
 ## 使用方式
 
  1. 启动桌面或者开始菜单中的`safetree`
- 1. 在弹出的对话框中输入**教师**的用户名
+ 1. 在弹出的对话框中输入**教师**的用户名，如果强行使用学生账号登陆，将无法检查到未完成的`专题作业`
  1. 程序会全自动完成全班的作业
 
-## 已知问题
+## 自定义`专题作业`答案
 
- - `专题作业`无法全自动完成，如有需要请[联系作者](https://github.com/gucong3000/safetree/issues)并提供你的**账号**和**作业网址**以便改进。
+ - 下载[示例配置文件](https://github.com/gucong3000/safetree/raw/master/specials.js)到程序安装目录(%LOCALAPPDATA%\Programs\safetree)，使用记事本编辑答案即可。

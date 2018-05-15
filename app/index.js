@@ -103,7 +103,9 @@ function initialize () {
 
 		initializeContents(mainWindow.webContents);
 
-		mainWindow.loadURL(`https://${city}.xueanquan.com/`);
+		mainWindow.loadURL(`https://${city}.xueanquan.com/`, {
+			userAgent: `Mozilla/5.0 (Windows NT 6.4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`,
+		});
 	}
 
 	app.on("ready", function () {
