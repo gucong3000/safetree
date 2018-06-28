@@ -141,8 +141,7 @@ function getHomeWorkUrls () {
 			// eslint-disable-next-line no-eval
 			const args = eval(a.getAttribute("onclick").trim().replace(/^\s*\w+\s*\((.+)\).*$/, "[$1]"));
 			if (args[5]) {
-				const id = RegExp.$1;
-				urls.specials[id] = {
+				urls.specials[args[5]] = {
 					expired: /不记录数据/.test(a.parentNode.parentNode.children[4].innerText),
 					title: title,
 					url: args[5],
@@ -303,6 +302,11 @@ ready(async () => {
 
 		$("a:contains('提交'), #tijiao").click();
 		await whaitResult(0);
+		callback();
+	} else if (document.body.children.length === 1) {
+		document.body.children[0].click();
+	} else if ($("p:contains('学校安全教育平台移动版下载方式')").length) {
+		await sleep(800);
 		callback();
 	} else {
 		const timer1 = setInterval(() => {

@@ -11,6 +11,7 @@ module.exports = function (src, data) {
 
 	const isDevToolsOpened = remote.getCurrentWebContents().isDevToolsOpened();
 	return new Promise((resolve, reject) => {
+		let failTimer;
 		const webview = document.createElement("webview");
 
 		webview.addEventListener("dom-ready", () => {
@@ -20,6 +21,7 @@ module.exports = function (src, data) {
 			webview.executeJavaScript(`require(${JSON.stringify(require.resolve("./task.js"))})`);
 		});
 		webview.addEventListener("ipc-message", (event) => {
+			clearTimeout(failTimer);
 			if (event.channel === "close") {
 				kill(event.args && event.args[0]);
 			} else if (event.channel === "request-data") {
@@ -27,8 +29,10 @@ module.exports = function (src, data) {
 			}
 		});
 		webview.addEventListener("did-fail-load", ex => {
-			kill();
-			reject(ex);
+			failTimer = setTimeout(() => {
+				kill();
+				reject(ex);
+			}, 0x4000);
 		});
 		webview.useragent = navigator.userAgent.replace(/\s+(Electron|safetree)\b\S+/g, "");
 

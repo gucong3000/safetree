@@ -7,18 +7,23 @@ const {
 } = electron;
 
 let mainWindow = null;
+let domReadyTimer;
 
 function atob (str) {
 	return Buffer.from(str, "base64").toString("binary");
 }
 
 function worker (webContents) {
-	webContents.executeJavaScript(`require(${JSON.stringify(require.resolve("./worker.js"))})`);
+	clearTimeout(domReadyTimer);
+	domReadyTimer = setTimeout(() => {
+		webContents.executeJavaScript(`require(${JSON.stringify(require.resolve("./worker.js"))})`);
+	}, 200);
 }
 
 function initializeContents (webContents) {
 	webContents.on("dom-ready", e => worker(e.sender));
 	webContents.on("new-window", e => initializeContents(e.sender));
+	webContents.on("will-navigate", () => clearTimeout(domReadyTimer));
 }
 
 function initialize () {
@@ -55,16 +60,16 @@ function initialize () {
 			const resetTimeout = function () {
 				clearTimeout(timerExit);
 				clearInterval(timerReload);
-				// 程序连续30分钟无响应则退出程序
+				// 程序连续3分钟无响应则退出程序
 				timerExit = setTimeout(() => {
 					console.log("长时间无响应，自动退出程序。");
 					app.exit(1);
-				}, 1800000);
-				// 程序连续100秒无响应刷新页面
+				}, 180000);
+				// 程序连续40秒无响应刷新页面
 				timerReload = setInterval(() => {
 					mainWindow.reload();
 					console.log("长时间无响应，自动刷新页面。");
-				}, 100000);
+				}, 40000);
 			};
 
 			Object.keys(console).forEach(fnName => {
@@ -79,13 +84,12 @@ function initialize () {
 				console.log.apply(console, args);
 			});
 			ipcMain.on("worker.finish", (event, exitCode) => {
-				app.exit(exitCode);
+				dev || app.exit(exitCode);
 			});
 			const account = atob(process.env.CI_TEACHER_ACCOUNT).split(/\s+/g);
 			if (!city && !/\d/.test(account[0])) {
 				city = account[0];
 			}
-			dev = false;
 			resetTimeout();
 		}
 

@@ -28,11 +28,18 @@ async function login (userName, password) {
 
 async function speciallogin (userName, password) {
 	const result = {};
-	const data = await request.getJSON(location.host.replace(/^\w+/, "//speciallogin") + "/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
-		account: userName,
-		password,
-		r: Math.random(),
-	});
+	let data;
+	try {
+		data = await request.getJSON(location.host.replace(/^\w+/, "//speciallogin") + "/SpecialLoginHandler.asmx/SpecialLogin?jsoncallback=?", {
+			account: userName,
+			password,
+			r: Math.random(),
+		});
+	} catch (ex) {
+		ex.userid = -1;
+		throw ex;
+	}
+
 	if (+data.userid >= 0) {
 		Object.assign(result, data);
 	}

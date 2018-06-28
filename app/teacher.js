@@ -4,6 +4,32 @@ const load = require("./load");
 const request = require("./request");
 const logger = require("./logger");
 const $ = window.$;
+const reActivity = /\/SystemActivityManage\/(\d+)\/.*$/i;
+
+function getVacationWork (title) {
+	let urlPrefix;
+	let expiredMonth;
+	// window.open("//huodong." + host.join('.') + "/summer2018/index.html");
+	// window.open("//huodong." + host.join('.') + "/Winter2017/index.html");
+	if (/暑假/.test(title)) {
+		urlPrefix = "https://huodong.xueanquan.com/summer";
+		expiredMonth = 8;
+	} else if (/寒假/.test(title)) {
+		urlPrefix = "https://huodong.xueanquan.com/Winter";
+		expiredMonth = 2;
+	} else {
+		return;
+	}
+	const now = new Date();
+	const fullYear = now.getFullYear();
+	const jobYaar = /(\d+)年/.test(title) ? RegExp.$1 : fullYear;
+
+	return {
+		expired: fullYear * 100 + now.getMonth() >= jobYaar * 100 + expiredMonth,
+		url: urlPrefix + jobYaar + "/",
+		title,
+	};
+}
 
 const teacher = {
 	login: function (userName, password) {
@@ -71,11 +97,21 @@ const teacher = {
 		teacher.specials = teacher.login().then(async () => {
 			logger.log("教师正在检查未完成的专题作业。");
 			const html = await request.get("/EduAdmin/Home/Index");
-			const links = $(html).find("#sidebar li:contains('专题课开展情况') > ul > li > a[href], #sidebar a:contains('安全第一课'), #sidebar a:contains('119消防专题'), #sidebar a:contains('安全教育日专题'), #sidebar a:contains('防溺水专题')").toArray();
+			const links = $(html).find("#sidebar li:contains('专题课开展情况') li a[href], #sidebar a:contains('安全第一课'), #sidebar a:contains('119'), #sidebar a:contains('122'), #sidebar a:contains('415'), #sidebar a:contains('专题'), #sidebar a:contains('寒假'), #sidebar a:contains('暑假')").toArray();
 			const works = {};
-			await Promise.all(links.map(link => {
-				const title = (link.title || link.innerText).trim().replace(/^第(\d+).+?$/, "$1");
-				return teacher.getSpecial(link.getAttribute("href"), title).then(names => {
+			await Promise.all(links.map(async link => {
+				let title = (link.title || link.innerText).trim().replace(/^第(\d+).+?$/, "$1");
+				let url = link.getAttribute("href");
+				if (url === "#") {
+					return;
+				}
+				if (reActivity.test(url)) {
+					const text = $(await request.get(url)).find("table a:not(:contains('查看'))").text();
+					title = (text && text.trim()) || title;
+					url = url.replace(reActivity, "/ActivityNoticeReplayToStudent/0/$1");
+				}
+
+				return teacher.getSpecial(url, title).then(names => {
 					if (names.length) {
 						works[title] = names;
 					}
@@ -121,7 +157,7 @@ const teacher = {
 					const title = id.replace(/专题$/, "");
 					work = Object.keys(urls.specials).map(
 						id => urls.specials[id]
-					).find(work => !work.expired && work.title.includes(title));
+					).find(work => !work.expired && work.title.includes(title)) || getVacationWork(title);
 				}
 				if (work) {
 					if (work.expired) {

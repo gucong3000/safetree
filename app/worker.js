@@ -121,6 +121,6 @@ async function worker (teacherInfo) {
 teacherLogin(true).then(() => {
 	ipcRenderer.send("worker.finish", 0);
 }, error => {
-	logger.error(error);
+	logger.error(error.stack || error);
 	ipcRenderer.send("worker.finish", 1);
 });
