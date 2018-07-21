@@ -5,13 +5,13 @@
   },
   "description": "学校安全教育平台全自动答题工具",
   "dependencies": {
-    "electron": "^2.0.3"
+    "electron": "^2.0.5"
   },
   "devDependencies": {
     "electron-builder": "^20.24.4",
-    "eslint": "^5.0.1",
+    "eslint": "^5.2.0",
     "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0"
