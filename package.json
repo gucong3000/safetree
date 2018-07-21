@@ -8,7 +8,7 @@
     "electron": "^2.0.3"
   },
   "devDependencies": {
-    "electron-builder": "^20.17.1",
+    "electron-builder": "^20.24.4",
     "eslint": "^5.0.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.12.0",
