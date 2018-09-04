@@ -3,7 +3,7 @@ const teacher = require("./teacher");
 const student = require("./student");
 const dialogs = require("./dialogs");
 const logger = require("./logger");
-const {ipcRenderer} = require("electron");
+const { ipcRenderer } = require("electron");
 
 if (!location.hostname) {
 	ipcRenderer.send("worker.finish", 1);

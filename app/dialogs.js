@@ -17,7 +17,7 @@ function thenify (obj) {
 
 let dialogs;
 if (process.env.CI_TEACHER_ACCOUNT) {
-	const {ipcRenderer} = require("electron");
+	const { ipcRenderer } = require("electron");
 	dialogs = {
 		prompt: function () {
 			const account = atob(process.env.CI_TEACHER_ACCOUNT).split(/\s+/g);

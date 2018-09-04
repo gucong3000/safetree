@@ -114,14 +114,14 @@ function callback (val) {
 	if (window.callPhantom) {
 		window.callPhantom(val);
 	} else if (window.require) {
-		const {ipcRenderer} = require("electron");
+		const { ipcRenderer } = require("electron");
 		ipcRenderer.sendToHost("close", val);
 	}
 }
 
 function requestData () {
 	return new Promise(resolve => {
-		const {ipcRenderer} = require("electron");
+		const { ipcRenderer } = require("electron");
 		ipcRenderer.once("data", (e, data) => {
 			resolve(data);
 		});

@@ -1,6 +1,6 @@
 "use strict";
 if (process.env.CI_TEACHER_ACCOUNT) {
-	const {ipcRenderer} = require("electron");
+	const { ipcRenderer } = require("electron");
 	const logger = {};
 	Object.keys(console).forEach(fnName => {
 		logger[fnName] = function () {
