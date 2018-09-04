@@ -11,7 +11,7 @@ safetree
 
 ## 安装
 
- - [点击下载最新版安装包](https://ci.appveyor.com/api/projects/gucong3000/safetree/artifacts/setup.zip)
+ - [点击下载最新版安装包](https://ci.appveyor.com/api/projects/gucong3000/safetree/artifacts/setup.zip?branch=master)
  - 解压并安装
  - 桌面出现safetree图标，打开即可正常使用
 
