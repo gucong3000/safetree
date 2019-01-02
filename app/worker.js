@@ -58,17 +58,21 @@ async function loop (students) {
 }
 
 const defaultUserName = localStorage.getItem("teacher_user_name");
+const defaultPassword = "123456";
 
 async function teacherLogin (tryName) {
 	let userName;
+	let password;
 	if (tryName && location.pathname === "/MainPage.html" && location.hash.length > 1) {
 		userName = location.hash.slice(1);
+		password = defaultPassword;
 	} else {
 		userName = await dialogs.prompt("请输入教师用户名", defaultUserName);
+		password = await dialogs.prompt("请输入教师密码", defaultPassword);
 	}
 	let teacherInfo;
 	try {
-		teacherInfo = await teacher.login(userName);
+		teacherInfo = await teacher.login(userName, password);
 	} catch (error) {
 		if (process.env.CI_TEACHER_ACCOUNT || !("userid" in error)) {
 			throw error;
