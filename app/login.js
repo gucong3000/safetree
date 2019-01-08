@@ -21,6 +21,7 @@ async function login (userName, password) {
 		}
 		window.$(".header-top .header-left~*:contains('欢迎')").html("欢迎您，" + info.truename);
 	} else {
+		// eslint-disable-next-line node/no-deprecated-api
 		location.href = url.resolve(info.baseurl, "/MainPage.html#" + userName);
 	}
 	return info;
@@ -67,6 +68,7 @@ async function getUserInfo (apiUrl) {
 		return result;
 	}
 	if (!apiUrl) {
+		// eslint-disable-next-line node/no-deprecated-api
 		return getUserInfo(url.resolve(result.baseurl, apiGetUserInfo));
 	}
 }
