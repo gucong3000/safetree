@@ -207,10 +207,27 @@ ready(async () => {
 
 	const student = await requestData();
 
-	if (window.SpecialSign) {
-		[1, 2, 3].forEach(workStep => {
-			window.SpecialSign(workStep);
-		});
+	if (window.special && window.special.loginCommit) {
+		window.special.loginCommit(student.username, "123456");
+		await sleep(2000);
+	}
+
+	if (window.specialId && window.serverSideUrl) {
+		await Promise.all(
+			[1, 2, 3].map(step => (
+				request.post(
+					window.serverSideUrl + "records/sign",
+					{
+						specialId: window.specialId,
+						step,
+						prvName: window.region,
+						cityName: window.city,
+					}
+				)
+			))
+		);
+		await sleep(2000);
+		callback();
 	}
 
 	if (window.gotest && window.tijiao) {
@@ -220,7 +237,8 @@ ready(async () => {
 	} else if (window.SPECIALID) {
 		await Promise.all([
 			request.post(
-				"https://huodong.xueanquan.com/Topic/topic/main/api/v1/safetyday/survey", {
+				"https://huodong.xueanquan.com/Topic/topic/main/api/v1/safetyday/survey",
+				{
 					prvId: student.prvid,
 					cityId: student.cityid,
 					countyId: student.coutryid,
@@ -233,13 +251,15 @@ ready(async () => {
 				}
 			),
 			request.getJSON(
-				student.baseurl + "/Topic/topic/platformapi/api/v2/records/sign?callback=?", {
+				student.baseurl + "/Topic/topic/platformapi/api/v2/records/sign?callback=?",
+				{
 					specialId: window.SPECIALID,
 					step: 1,
 				}
 			),
 			request.post(
-				student.baseurl + "/Topic/topic/platformapi/api/v1/records/sign", {
+				student.baseurl + "/Topic/topic/platformapi/api/v1/records/sign",
+				{
 					specialId: window.SPECIALID,
 					step: 2,
 				}
@@ -312,7 +332,7 @@ ready(async () => {
 		const timer1 = setInterval(() => {
 			$("a:contains('马上去'), a:contains('请签'), a:contains('请点')").filter(":visible").first().click();
 		}, 200);
-		const timer2 = setTimeout(() => {
+		const timer2 = setTimeout(async () => {
 			const urls = {
 				"_family.html": /_school.html$/,
 				"_two$1": /_one(\.\w+)$/,
@@ -326,10 +346,13 @@ ready(async () => {
 				const rule = Object.keys(urls).find(key => urls[key].test(location.pathname));
 				newUrl = rule && location.pathname.replace(urls[rule], rule);
 			}
-			if (newUrl) {
-				request.get(newUrl).then(() => {
+			if (newUrl && newUrl !== location.href) {
+				try {
+					await request.get(newUrl);
 					location.href = newUrl;
-				});
+				} catch (ex) {
+					//
+				}
 			}
 		}, process.env.CI ? 3000 : 800);
 		window.onbeforeunload = () => {
