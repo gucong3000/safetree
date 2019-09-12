@@ -5,7 +5,7 @@
   },
   "description": "学校安全教育平台全自动答题工具",
   "dependencies": {
-    "electron": "^4.0.0"
+    "electron": "^6.0.9"
   },
   "devDependencies": {
     "electron-builder": "^20.38.4",
