@@ -102,7 +102,7 @@ const teacher = {
 			await Promise.all(links.map(async link => {
 				let title = (link.title || link.innerText).trim().replace(/^第(\d+).+?$/, "$1");
 				let url = link.getAttribute("href");
-				if (url === "#") {
+				if (url === "#" || /^javascript:/i.test(url)) {
 					return;
 				}
 				if (reActivity.test(url)) {
