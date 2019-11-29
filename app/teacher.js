@@ -83,10 +83,10 @@ const teacher = {
 		return $(await request.post(url)).find("tr").toArray()
 			.filter(
 				tr => Array.from(tr.children).some(
-					td => td.innerText.trim() === "未完成"
-				)
+					td => td.innerText.trim() === "未完成",
+				),
 			).map(
-				tr => tr.children[1].innerText.trim()
+				tr => tr.children[1].innerText.trim(),
 			);
 	},
 	getSpecials: function () {
@@ -156,7 +156,7 @@ const teacher = {
 				if (!work) {
 					const title = id.replace(/专题$/, "");
 					work = Object.keys(urls.specials).map(
-						id => urls.specials[id]
+						id => urls.specials[id],
 					).find(work => !work.expired && work.title.includes(title)) || getVacationWork(title);
 				}
 				if (work) {

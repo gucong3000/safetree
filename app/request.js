@@ -8,7 +8,7 @@ const jQuery = require("jquery");
 			pagesize: 999,
 		}, data);
 		return Promise.resolve(
-			jQuery[fnName](url, data)
+			jQuery[fnName](url, data),
 		).catch(ex => {
 			const error = new Error("Ajax: " + url);
 			error.url = url;
