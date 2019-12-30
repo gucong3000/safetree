@@ -111,7 +111,7 @@ const teacher = {
 					url = url.replace(reActivity, "/ActivityNoticeReplayToStudent/0/$1");
 				}
 
-				return teacher.getSpecial(url, title).then(names => {
+				return teacher.getSpecial(url).then(names => {
 					if (names.length) {
 						works[title] = names;
 					}
@@ -154,7 +154,7 @@ const teacher = {
 				const urls = await teacher.getHomeWorkUrls();
 				let work = urls.specials[id];
 				if (!work) {
-					const title = id.replace(/专题$/, "");
+					const title = id.replace(/^\d*(.*?)专题$/, "$1");
 					work = Object.keys(urls.specials).map(
 						id => urls.specials[id],
 					).find(work => !work.expired && work.title.includes(title)) || getVacationWork(title);
