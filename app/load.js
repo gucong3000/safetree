@@ -7,6 +7,7 @@ module.exports = function (src, data) {
 	src = {
 		"https://zhuanti.xueanquan.com/special/drowning2018/index.html": "https://zhuanti.xueanquan.com/special/drowning2018/drowning2018_family.html",
 		"https://zhuanti.xueanquan.com/special/nationeducation2018/index.html": "https://zhuanti.xueanquan.com/special/nationeducation2018/nationeducation_family.html",
+		"https://huodong.xueanquan.com/Winter2020/": "https://huodong.xueanquan.com/winter2020/video.html",
 	}[src] || src;
 
 	const isDevToolsOpened = remote.getCurrentWebContents().isDevToolsOpened();
